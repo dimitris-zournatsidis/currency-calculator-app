@@ -8,11 +8,11 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleSubmit(e: any) {
+  function handleLogin(e: any) {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error('Please add credentials');
+      toast.error('Please add your credentials');
     } else {
       toast.success('User logged in');
       navigate('/');
@@ -25,10 +25,10 @@ export default function Login() {
     <>
       <h1>Login</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <input
           type='email'
-          placeholder='Enter an email'
+          placeholder='Enter your email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -40,7 +40,7 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleSubmit}>Login</button>
+        <button onClick={handleLogin}>Login</button>
       </form>
 
       <Link to='/' className='back-home-link'>

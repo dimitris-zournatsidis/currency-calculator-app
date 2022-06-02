@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import CurrencyInput from './CurrencyInput';
+import CurrencyInput from './components/CurrencyInput';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { FaUserTie } from 'react-icons/fa';
+import { GoSignIn } from 'react-icons/go';
+import { GrLogout } from 'react-icons/gr';
 
 interface HomeProps {}
 
@@ -50,9 +52,19 @@ export default function Home(props: HomeProps) {
 
   return (
     <div>
-      <Link to='/login' className='login-link'>
-        <FaUserTie /> Login
-      </Link>
+      <div className='login-register-container'>
+        <Link to='/login' className='login-resgister-link'>
+          <FaUserTie /> Login
+        </Link>
+
+        <Link to='/register' className='login-resgister-link'>
+          <GoSignIn /> Register
+        </Link>
+
+        <Link to='/' className='login-resgister-link'>
+          <GrLogout /> Logout
+        </Link>
+      </div>
 
       <h1>Currency Calculator</h1>
 
