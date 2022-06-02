@@ -44,8 +44,8 @@ export default function Login() {
       </form>
 
       <Link to='/' className='back-home-link'>
-        <FaBackward />
-        Go Back
+        <FaBackward className='icons' />
+        <span>Go Back</span>
       </Link>
     </>
   );

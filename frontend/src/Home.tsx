@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { FaUserTie } from 'react-icons/fa';
 import { GoSignIn } from 'react-icons/go';
-import { GrLogout } from 'react-icons/gr';
+import { FiLogOut } from 'react-icons/fi';
 
 interface HomeProps {}
 
@@ -54,15 +54,18 @@ export default function Home(props: HomeProps) {
     <div>
       <div className='login-register-container'>
         <Link to='/login' className='login-resgister-link'>
-          <FaUserTie /> Login
+          <FaUserTie className='icons' />
+          <span>Login</span>
         </Link>
 
         <Link to='/register' className='login-resgister-link'>
-          <GoSignIn /> Register
+          <GoSignIn className='icons' />
+          <span>Register</span>
         </Link>
 
         <Link to='/' className='login-resgister-link'>
-          <GrLogout /> Logout
+          <FiLogOut className='icons' />
+          <span>Logout</span>
         </Link>
       </div>
 

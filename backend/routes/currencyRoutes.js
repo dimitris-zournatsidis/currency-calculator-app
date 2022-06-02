@@ -7,6 +7,7 @@ const {
   deleteCurrencyExchange,
 } = require('../controllers/currencyController');
 // const { protect } = require('../middleware/authMiddleware');
+// if needed, add protect as the second parameter below
 
 router.get('/', getCurrencyExchanges);
 router.post('/', setCurrencyExchange);

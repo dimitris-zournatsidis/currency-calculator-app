@@ -16,6 +16,14 @@ body {
   gap: 1.5rem;
 }
 
+.icons {
+  color: black;
+}
+
+.login-register-container span {
+  color: black;
+}
+
 .login-resgister-link {
   /* border: 1px solid red; */
   display: flex;
@@ -69,4 +77,8 @@ form button {
   gap: 0.5rem;
   margin-top: 5rem;
   text-decoration: none;
+}
+
+.back-home-link span {
+  color: black;
 }

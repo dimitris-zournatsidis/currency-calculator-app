@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const currencyExchangeSchema = new mongoose.Schema(
+const currencyExchangeSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
