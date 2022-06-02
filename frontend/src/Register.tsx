@@ -11,6 +11,9 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
 
+  const name = firstName + ' ' + lastName;
+  
+
   function handleRegister(e: any) {
     e.preventDefault();
 

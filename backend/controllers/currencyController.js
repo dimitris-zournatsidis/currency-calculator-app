@@ -10,19 +10,21 @@ const getCurrencyExchanges = asyncHandler(async (req, res) => {
   res.status(200).json(currencyExchanges);
 });
 
-// @desc Set Currency Exchanges
+// @desc Create Currency Exchange
 // @route POST /api/currency_exchange_rates
 // @access Private
-const setCurrencyExchange = asyncHandler(async (req, res) => {
+const createCurrencyExchange = asyncHandler(async (req, res) => {
   if (!req.body.from || !req.body.to || !req.body.ratio) {
     res.status(400);
     throw new Error('Please add all required fields');
   }
+
   const currencyExchanges = await CurrencyExchanges.create({
     from: req.body.from,
     to: req.body.to,
     ratio: req.body.ratio,
     // user: req.user.id,
+    user: req.user
   });
   res.status(200).json(currencyExchanges);
 });
@@ -31,8 +33,8 @@ const setCurrencyExchange = asyncHandler(async (req, res) => {
 // @route PUT /api/currency_exchange_rates:id
 // @access Private
 const updateCurrencyExchange = asyncHandler(async (req, res) => {
-  const currencyExchanges = await CurrencyExchanges.findById(req.params.id);
-  if (!currencyExchanges) {
+  const currencyExchange = await CurrencyExchanges.findById(req.params.id);
+  if (!currencyExchange) {
     res.status(400);
     throw new Error('Currency Exchange not found');
   }
@@ -44,20 +46,23 @@ const updateCurrencyExchange = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  // Make sure the logged in user matches the currencyExchange user
-  if (currencyExchanges.user.toString() !== user.id) {
+  // Make sure the logged in user matches the currency exchange user
+  console.log('user!!!', req.user);
+  if (currencyExchange.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error('User not authorized');
   }
 
-  const updatedcurrencyExchange = await CurrencyExchanges.findByIdAndUpdate(
+  const updatedCurrencyExchange = await CurrencyExchanges.findByIdAndUpdate(
     req.params.id,
     req.body,
     {
       new: true,
     }
   );
-  res.status(200).json(updatedcurrencyExchange);
+
+  console.log('updated!!!', updatedCurrencyExchange);
+  res.status(200).json(updatedCurrencyExchange);
 });
 
 // @desc Delete Currency Exchange
@@ -77,8 +82,8 @@ const deleteCurrencyExchange = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  // Make sure the logged in user matches the currency exchange admin
-  if (currencyExchanges.user.toString() !== user.id) {
+  // Make sure the logged in user matches the currency exchange user
+  if (currencyExchanges.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error('User not authorized');
   }
@@ -89,7 +94,7 @@ const deleteCurrencyExchange = asyncHandler(async (req, res) => {
 
 module.exports = {
   getCurrencyExchanges,
-  setCurrencyExchange,
+  createCurrencyExchange,
   updateCurrencyExchange,
   deleteCurrencyExchange,
 };

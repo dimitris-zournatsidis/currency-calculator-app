@@ -2,16 +2,15 @@ const express = require('express');
 const router = express.Router();
 const {
   getCurrencyExchanges,
-  setCurrencyExchange,
+  createCurrencyExchange,
   updateCurrencyExchange,
   deleteCurrencyExchange,
 } = require('../controllers/currencyController');
-// const { protect } = require('../middleware/authMiddleware');
-// if needed, add protect as the second parameter below
+const { protect } = require('../middleware/authMiddleware');
 
-router.get('/', getCurrencyExchanges);
-router.post('/', setCurrencyExchange);
-router.put('/:id', updateCurrencyExchange);
-router.delete('/:id', deleteCurrencyExchange);
+router.get('/', protect, getCurrencyExchanges);
+router.post('/', protect, createCurrencyExchange);
+router.put('/:id', protect, updateCurrencyExchange);
+router.delete('/:id', protect, deleteCurrencyExchange);
 
 module.exports = router;
