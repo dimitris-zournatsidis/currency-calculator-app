@@ -63,10 +63,10 @@ export default function Home(props: HomeProps) {
           <span>Register</span>
         </Link>
 
-        <Link to='/' className='login-resgister-link'>
+        {/* <Link to='/' className='login-resgister-link'>
           <FiLogOut className='icons' />
           <span>Logout</span>
-        </Link>
+        </Link> */}
       </div>
 
       <h1>Currency Calculator</h1>
