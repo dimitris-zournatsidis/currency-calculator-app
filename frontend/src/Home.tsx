@@ -4,13 +4,15 @@ import Header from './components/Header/Header';
 import CurrencyInput from './components/CurrencyInput/CurrencyInput';
 import { FaEdit } from 'react-icons/fa';
 import { RiDeleteBin2Line } from 'react-icons/ri';
+import { IoMdAdd } from 'react-icons/io';
+import { toast } from 'react-toastify';
 
 interface HomeProps {}
 
 const API_KEY = '9df0a1629d6309d1ade5a70e0261a446';
 const URL = `http://api.exchangeratesapi.io/v1/latest?access_key=${API_KEY}`;
 
-const tableHead = ['ID', 'From', 'To', 'Ratio', 'Actions'];
+// const tableHead = ['ID', 'From', 'To', 'Ratio', 'Actions'];
 
 const tableData = [
   { id: '1', from: 'CAD', to: 'USD', ratio: '1.123' },
@@ -20,11 +22,18 @@ const tableData = [
 ];
 
 export default function Home(props: HomeProps) {
+  // Currency Inputs
   const [amount1, setAmount1] = useState(1);
   const [amount2, setAmount2] = useState(1);
   const [currency1, setCurrency1] = useState('EUR');
   const [currency2, setCurrency2] = useState('USD');
   const [rates, setRates] = useState([]);
+  // Add currency form
+  const [isAddCurrencyFormVisible, setIsAddCurrencyFormVisible] =
+    useState(false);
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [ratio, setRatio] = useState('');
 
   useEffect(() => {
     axios.get(URL).then((response) => {
@@ -44,6 +53,9 @@ export default function Home(props: HomeProps) {
 
   function handleDeleteClick(index: number) {
     console.log('delete clicked on index:', index);
+    window.confirm(
+      `Are you sure you want to delete currency on index ${index}`
+    );
   }
 
   function format(num: any) {
@@ -72,7 +84,20 @@ export default function Home(props: HomeProps) {
   }
 
   function handleAddCurrency() {
+    setIsAddCurrencyFormVisible(true);
     console.log('add currency clicked');
+  }
+
+  function handleCurrencySubmit() {
+    if (!from || !to || !ratio) {
+      toast.error('Please fill all fields');
+    } else {
+      toast.success('Currency added successfully');
+      console.log(from, to, ratio);
+      setFrom('');
+      setTo('');
+      setRatio('');
+    }
   }
 
   return (
@@ -97,6 +122,7 @@ export default function Home(props: HomeProps) {
         currency={currency2}
       />
 
+      {/* TABLE !!!!!!!!!!!!!!!!!!!!!!! */}
       {/* {rates.length > 0 && ( */}
       <table className='content-table'>
         <thead>
@@ -138,9 +164,49 @@ export default function Home(props: HomeProps) {
       </table>
       {/* )} */}
 
-      <div className='add-currency-button' onClick={handleAddCurrency}>
-        Add Currency
+      <div
+        className={
+          isAddCurrencyFormVisible
+            ? 'add-currency-button disabled'
+            : 'add-currency-button'
+        }
+        onClick={handleAddCurrency}
+      >
+        <IoMdAdd /> Add Currency
       </div>
+
+      {/* ADD CURRENCY FORM !!!!!!!!!!!!!!!!!!!!! */}
+      {isAddCurrencyFormVisible && (
+        <div className='add-currency-container'>
+          <form onSubmit={handleCurrencySubmit}>
+            <input
+              type='text'
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+              placeholder='From'
+            />
+            <input
+              type='text'
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+              placeholder='To'
+            />
+            <input
+              type='text'
+              value={ratio}
+              onChange={(e) => setRatio(e.target.value)}
+              placeholder='Ratio'
+            />
+          </form>
+
+          <div className='add-currency-button-container'>
+            <button onClick={handleCurrencySubmit}>Add</button>
+            <button onClick={() => setIsAddCurrencyFormVisible(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

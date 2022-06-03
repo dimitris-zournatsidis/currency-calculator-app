@@ -29,7 +29,7 @@ export default function Register() {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !password || !password2) {
-      toast.error('Please fill all required fields');
+      toast.error('All fields are required');
     } else if (password !== password2) {
       toast.error('Passwords do not match');
     } else {

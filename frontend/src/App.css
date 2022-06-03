@@ -11,7 +11,7 @@ body {
 
 h1 {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   font-size: 2rem;
 }
 
@@ -57,15 +57,14 @@ form button {
 
 .content-table {
   border-collapse: collapse;
-  margin: 4rem 1rem 2rem;
-  /* font-size: 0.9rem; */
+  margin: 2.5rem 1rem 1rem;
   width: calc(100% - 2rem);
   border-radius: 0.5rem 0.5rem 0 0;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-@media (min-width:801px) {
+@media (min-width: 801px) {
   .content-table {
     margin: 4rem auto 2rem;
     width: 50%;
@@ -108,20 +107,58 @@ form button {
 .edit-icon {
   color: orange;
   font-size: 1.25rem;
+  cursor: pointer;
 }
 
 .delete-icon {
   color: red;
   font-size: 1.25rem;
+  cursor: pointer;
 }
 
 .add-currency-button {
   text-align: center;
   width: 10rem;
-  margin: 0 auto;
-  padding: 0.8rem 0;
-  background-color: green;
-  color: white;
-  border-radius: 0.5rem;
+  margin: 0 auto 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
+  transition: all 100ms ease-in-out;
+}
+
+.disabled {
+  pointer-events: none;
+  color: lightgray;
+  cursor: default;
+}
+
+.add-currency-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.add-currency-button-container {
+  margin: 1rem auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.add-currency-button-container button {
+  border-radius: 0.5rem;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.add-currency-button-container button:first-child {
+  background-color: green;
+}
+
+.add-currency-button-container button:last-child {
+  background-color: red;
 }
