@@ -5,32 +5,14 @@
 }
 
 body {
-  padding: 3rem;
+  padding: 3rem 0;
   font-family: Arial, Helvetica, sans-serif;
-}
-
-.top-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.top-container-links {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 3rem;
-  font-size: 1.2rem;
-  gap: 0.2rem;
-  color: black;
-  font-weight: bold;
-  text-decoration: none;
 }
 
 h1 {
   text-align: center;
   margin-bottom: 2.5rem;
+  font-size: 2rem;
 }
 
 form {
@@ -54,7 +36,7 @@ form button {
   margin: 1rem auto 0;
   background-color: black;
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -71,4 +53,75 @@ form button {
   margin: 5rem auto 0;
   font-weight: bold;
   text-decoration: none;
+}
+
+.content-table {
+  border-collapse: collapse;
+  margin: 4rem 1rem 2rem;
+  /* font-size: 0.9rem; */
+  width: calc(100% - 2rem);
+  border-radius: 0.5rem 0.5rem 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width:801px) {
+  .content-table {
+    margin: 4rem auto 2rem;
+    width: 50%;
+  }
+}
+
+.content-table thead tr {
+  background-color: black;
+  color: white;
+  text-align: left;
+  font-size: 1rem;
+  padding: 1rem;
+}
+
+.content-table th,
+.content-table td {
+  padding: 12px 15px;
+}
+
+.content-table tbody tr {
+  border-bottom: 1px solid lightgrey;
+  font-size: 0.8rem;
+}
+
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.content-table tbody tr:last-of-type {
+  border-bottom: 2px solid black;
+}
+
+.content-table tbody tr td:last-child {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.edit-icon {
+  color: orange;
+  font-size: 1.25rem;
+}
+
+.delete-icon {
+  color: red;
+  font-size: 1.25rem;
+}
+
+.add-currency-button {
+  text-align: center;
+  width: 10rem;
+  margin: 0 auto;
+  padding: 0.8rem 0;
+  background-color: green;
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }

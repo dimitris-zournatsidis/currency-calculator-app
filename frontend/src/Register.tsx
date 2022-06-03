@@ -89,7 +89,7 @@ export default function Register() {
           onChange={(e) => setPassword2(e.target.value)}
         />
 
-        <button onClick={handleRegister}>Register</button>
+        <button onClick={handleRegister}>Sign Up</button>
       </form>
 
       <Link to='/' className='back-home-link'>
