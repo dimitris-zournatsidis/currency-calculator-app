@@ -1,29 +1,50 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBackward } from 'react-icons/fa';
+import { TiArrowBackOutline } from 'react-icons/ti';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+
+const API_URL = '/api/users/';
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleLogin(e: any) {
+  function resetAllFields() {
+    setEmail('');
+    setPassword('');
+  }
+
+  async function handleLogin(e: any) {
     e.preventDefault();
 
     if (!email || !password) {
       toast.error('Please add your credentials');
     } else {
-      toast.success('User logged in');
-      navigate('/');
-      console.log('email:', email);
-      console.log('pass:', password);
+      try {
+        const userData = {
+          email: email,
+          password: password,
+        };
+        const response = await axios.post(API_URL + 'login', userData);
+
+        if (response.data) {
+          localStorage.setItem('user', JSON.stringify(response.data));
+          toast.success('Welcome back!');
+          resetAllFields();
+          navigate('/');
+        }
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
   return (
     <>
-      <h1>Login</h1>
+      <h1>Login User</h1>
 
       <form onSubmit={handleLogin}>
         <input
@@ -44,7 +65,7 @@ export default function Login() {
       </form>
 
       <Link to='/' className='back-home-link'>
-        <FaBackward className='icons' />
+        <TiArrowBackOutline className='icons' />
         <span>Go Back</span>
       </Link>
     </>

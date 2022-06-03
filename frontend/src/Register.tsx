@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBackward } from 'react-icons/fa';
+import { TiArrowBackOutline } from 'react-icons/ti';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+
+const API_URL = '/api/users/';
 
 export default function Register() {
   const navigate = useNavigate();
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -12,9 +16,16 @@ export default function Register() {
   const [password2, setPassword2] = useState('');
 
   const name = firstName + ' ' + lastName;
-  
 
-  function handleRegister(e: any) {
+  function resetAllFields() {
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPassword('');
+    setPassword2('');
+  }
+
+  async function handleRegister(e: any) {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !password || !password2) {
@@ -22,16 +33,29 @@ export default function Register() {
     } else if (password !== password2) {
       toast.error('Passwords do not match');
     } else {
-      toast.success('User signed in successfully');
-      navigate('/');
-      console.log('email:', email);
-      console.log('pass:', password);
+      const userData = {
+        name: name,
+        email: email,
+        password: password,
+      };
+      try {
+        const response = await axios.post(API_URL, userData);
+        if (response.data) {
+          localStorage.setItem('user', JSON.stringify(response.data));
+          toast.success('User signed in successfully');
+          resetAllFields();
+          navigate('/');
+        }
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
   return (
     <>
-      <h1>Register</h1>
+      <h1>Register User</h1>
 
       <form onSubmit={handleRegister}>
         <input
@@ -69,7 +93,7 @@ export default function Register() {
       </form>
 
       <Link to='/' className='back-home-link'>
-        <FaBackward className='icons' />
+        <TiArrowBackOutline />
         <span>Go Back</span>
       </Link>
     </>

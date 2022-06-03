@@ -1,4 +1,3 @@
-import React from 'react';
 import './CurrencyInput.css';
 
 interface CurrencyInputProps {
@@ -9,9 +8,7 @@ interface CurrencyInputProps {
   currencies: any[];
 }
 
-export default function CurrencyInput(
-  props: CurrencyInputProps
-): React.ReactElement {
+export default function CurrencyInput(props: CurrencyInputProps) {
   return (
     <div className='group'>
       <input

@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
-import CurrencyInput from './components/CurrencyInput';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { FaUserTie } from 'react-icons/fa';
-import { GoSignIn } from 'react-icons/go';
-import { FiLogOut } from 'react-icons/fi';
+import Header from './components/Header';
+import CurrencyInput from './components/CurrencyInput/CurrencyInput';
 
 interface HomeProps {}
 
@@ -24,6 +21,11 @@ export default function Home(props: HomeProps) {
       setRates(response.data.rates);
     });
   }, []);
+
+  function handleLogout() {
+    console.log('logout clicked');
+    // localStorage.removeItem('user');
+  }
 
   function format(num: any) {
     return num.toFixed(4);
@@ -51,23 +53,8 @@ export default function Home(props: HomeProps) {
   }
 
   return (
-    <div>
-      <div className='login-register-container'>
-        <Link to='/login' className='login-resgister-link'>
-          <FaUserTie className='icons' />
-          <span>Login</span>
-        </Link>
-
-        <Link to='/register' className='login-resgister-link'>
-          <GoSignIn className='icons' />
-          <span>Register</span>
-        </Link>
-
-        {/* <Link to='/' className='login-resgister-link'>
-          <FiLogOut className='icons' />
-          <span>Logout</span>
-        </Link> */}
-      </div>
+    <section>
+      <Header onLogout={handleLogout} />
 
       <h1>Currency Calculator</h1>
 
@@ -86,6 +73,6 @@ export default function Home(props: HomeProps) {
         amount={amount2}
         currency={currency2}
       />
-    </div>
+    </section>
   );
 }
