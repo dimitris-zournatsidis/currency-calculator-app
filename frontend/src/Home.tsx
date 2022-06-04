@@ -73,8 +73,6 @@ export default function Home() {
       .then((res) => {
         // console.log('res data!!', res.data);
         setSelectedExchangeRatio(res.data);
-        handleCurrencyFromChange(selectedCurrencyFrom);
-        handleCurrencyToChange(selectedCurrencyTo);
       });
   }, [selectedCurrencyFrom, selectedCurrencyTo]);
 
