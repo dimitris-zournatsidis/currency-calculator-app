@@ -8,7 +8,8 @@ const {
 } = require('../controllers/currencyController');
 const { protect } = require('../middleware/authMiddleware');
 
-router.get('/', protect, getCurrencyExchanges);
+router.get('/', getCurrencyExchanges);
+router.get('/:from/:to', getCurrencyExchanges);
 router.post('/', protect, createCurrencyExchange);
 router.put('/:id', protect, updateCurrencyExchange);
 router.delete('/:id', protect, deleteCurrencyExchange);

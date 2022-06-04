@@ -1,12 +1,19 @@
 const asyncHandler = require('express-async-handler');
 const CurrencyExchanges = require('../models/currencyModel');
-const User = require('../models/userModel');
 
 // @desc Get Currency Exchanges
 // @route GET /api/currency_exchange_rates
 // @access Private
 const getCurrencyExchanges = asyncHandler(async (req, res) => {
-  const currencyExchanges = await CurrencyExchanges.find({ user: req.body.id });
+  let currencyExchanges;
+  if (req.params.from && req.params.to) {
+    currencyExchanges = await CurrencyExchanges.findOne({
+      from: req.params.from,
+      to: req.params.to,
+    });
+  } else {
+    currencyExchanges = await CurrencyExchanges.find();
+  }
   res.status(200).json(currencyExchanges);
 });
 
@@ -23,8 +30,6 @@ const createCurrencyExchange = asyncHandler(async (req, res) => {
     from: req.body.from,
     to: req.body.to,
     ratio: req.body.ratio,
-    // user: req.user.id,
-    user: req.user
   });
   res.status(200).json(currencyExchanges);
 });
@@ -37,20 +42,6 @@ const updateCurrencyExchange = asyncHandler(async (req, res) => {
   if (!currencyExchange) {
     res.status(400);
     throw new Error('Currency Exchange not found');
-  }
-
-  const user = await User.findById(req.user.id);
-  // Check for user
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found');
-  }
-
-  // Make sure the logged in user matches the currency exchange user
-  console.log('user!!!', req.user);
-  if (currencyExchange.user.toString() !== req.user.id) {
-    res.status(401);
-    throw new Error('User not authorized');
   }
 
   const updatedCurrencyExchange = await CurrencyExchanges.findByIdAndUpdate(
@@ -74,20 +65,6 @@ const deleteCurrencyExchange = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Currency exchange not found');
   }
-
-  const user = await User.findById(req.user.id);
-  // check for user
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found');
-  }
-
-  // Make sure the logged in user matches the currency exchange user
-  if (currencyExchanges.user.toString() !== req.user.id) {
-    res.status(401);
-    throw new Error('User not authorized');
-  }
-
   await currencyExchanges.remove();
   res.status(200).json({ id: req.params.id });
 });
