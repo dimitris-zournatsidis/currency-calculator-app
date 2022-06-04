@@ -4,8 +4,6 @@ import { TiArrowBackOutline } from 'react-icons/ti';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-const API_URL = '/api/users/';
-
 export default function Register() {
   const navigate = useNavigate();
 
@@ -25,7 +23,7 @@ export default function Register() {
     setPassword2('');
   }
 
-  async function handleRegister(e: any) {
+  function handleRegister(e: any) {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !password || !password2) {
@@ -39,14 +37,12 @@ export default function Register() {
         password: password,
       };
       try {
-        const response = await axios.post(API_URL, userData);
-        if (response.data) {
-          localStorage.setItem('user', JSON.stringify(response.data));
+        axios.post('http://localhost:5000/api/users/', userData).then((res) => {
+          localStorage.setItem('user', JSON.stringify(res.data));
           toast.success('User signed in successfully');
           resetAllFields();
           navigate('/');
-        }
-        return response.data;
+        });
       } catch (error) {
         console.log(error);
       }

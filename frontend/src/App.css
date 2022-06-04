@@ -55,6 +55,7 @@ form button {
   text-decoration: none;
 }
 
+/* CURRENCIES TABLE */
 .content-table {
   border-collapse: collapse;
   margin: 2.5rem 1rem 1rem;
@@ -116,7 +117,7 @@ form button {
   cursor: pointer;
 }
 
-.add-currency-button {
+.add-more {
   text-align: center;
   width: 10rem;
   margin: 0 auto 1rem;
@@ -134,6 +135,7 @@ form button {
   cursor: default;
 }
 
+/* ADD CURRENCY FORM */
 .add-currency-container {
   display: flex;
   flex-direction: column;
@@ -155,7 +157,11 @@ form button {
   cursor: pointer;
 }
 
-.add-currency-button-container button:first-child {
+.add-currency-button-container .update-button {
+  background-color: blue;
+}
+
+.add-currency-button-container .add-button {
   background-color: green;
 }
 

@@ -6,97 +6,192 @@ import { FaEdit } from 'react-icons/fa';
 import { RiDeleteBin2Line } from 'react-icons/ri';
 import { IoMdAdd } from 'react-icons/io';
 import { toast } from 'react-toastify';
+interface IRates {
+  _id: string;
+  from: string;
+  to: string;
+  ratio: number;
+}
 
-interface HomeProps {}
+const API_URL = 'http://localhost:5000/api/currency_exchange_rates';
 
-const API_KEY = '9df0a1629d6309d1ade5a70e0261a446';
-const URL = `http://api.exchangeratesapi.io/v1/latest?access_key=${API_KEY}`;
+export default function Home() {
+  const localStorageData = localStorage.getItem('user');
+  const [rates, setRates] = useState<IRates[]>();
 
-// const tableHead = ['ID', 'From', 'To', 'Ratio', 'Actions'];
+  // Currency Input / Select
+  const [amountFrom, setAmountFrom] = useState<number>();
+  const [amountTo, setAmountTo] = useState<number>();
+  const [selectedCurrencyFrom, setSelectedCurrencyFrom] = useState('');
+  const [selectedCurrencyTo, setSelectedCurrencyTo] = useState('');
+  const [selectedExchangeRatio, setSelectedExchangeRatio] = useState<IRates>();
 
-const tableData = [
-  { id: '1', from: 'CAD', to: 'USD', ratio: '1.123' },
-  { id: '2', from: 'EUR', to: 'USD', ratio: '1.345' },
-  { id: '3', from: 'Swiss Franc', to: 'USD', ratio: '1.678' },
-  { id: '4', from: 'USD', to: 'EUR', ratio: '1.912' },
-];
-
-export default function Home(props: HomeProps) {
-  // Currency Inputs
-  const [amount1, setAmount1] = useState(1);
-  const [amount2, setAmount2] = useState(1);
-  const [currency1, setCurrency1] = useState('EUR');
-  const [currency2, setCurrency2] = useState('USD');
-  const [rates, setRates] = useState([]);
-  // Add currency form
+  // Crud currency form
   const [isAddCurrencyFormVisible, setIsAddCurrencyFormVisible] =
     useState(false);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [ratio, setRatio] = useState('');
+  const [selectedIdToEdit, setSelectedIdToEdit] = useState('');
 
+  const [crudAction, setCrudAction] = useState('');
+
+  // Dropdown options
+  const [fromCurrenciesDropdownOptions, setFromCurrenciesDropdownOptions] =
+    useState<string[]>([]);
+  const [toCurrenciesDropdownOptions, setToCurrenciesDropdownOptions] =
+    useState<string[]>([]);
+
+  // Get all Currency Exchanges
   useEffect(() => {
-    axios.get(URL).then((response) => {
-      // console.log('res!!!!', response.data.rates);
-      setRates(response.data.rates);
+    console.log('xanaetrexe!!!!!!!!');
+    axios.get(API_URL).then((res) => {
+      setRates(res.data);
+
+      let from: string[] = [];
+      let to: string[] = [];
+      res.data.map((item: IRates, index: number) => {
+        if (index === 0) {
+          setSelectedCurrencyFrom(item.from);
+          setSelectedCurrencyTo(item.to);
+        }
+        from.push(item.from);
+        to.push(item.to);
+        return true;
+      });
+      setFromCurrenciesDropdownOptions(from);
+      setToCurrenciesDropdownOptions(to);
     });
-  }, []);
+  }, [crudAction]);
+
+  // Get one Currency Exchange
+  useEffect(() => {
+    console.log('xanaetrexe to ena 11111');
+    axios
+      .get(API_URL + `/${selectedCurrencyFrom}/${selectedCurrencyTo}`)
+      .then((res) => {
+        // console.log('res data!!', res.data);
+        setSelectedExchangeRatio(res.data);
+        handleCurrencyFromChange(selectedCurrencyFrom);
+        handleCurrencyToChange(selectedCurrencyTo);
+      });
+  }, [selectedCurrencyFrom, selectedCurrencyTo]);
 
   function handleLogout() {
-    console.log('logout clicked');
-    // localStorage.removeItem('user');
+    localStorage.removeItem('user');
+    window.location.reload();
   }
 
-  function handleEditClick(index: number) {
-    console.log('edit clicked on index:', index);
+  function handleEditClick(item: IRates) {
+    setSelectedIdToEdit(item._id);
+    setIsAddCurrencyFormVisible(true);
+    setFrom(item.from);
+    setTo(item.to);
+    setRatio(item.ratio.toString());
   }
 
-  function handleDeleteClick(index: number) {
-    console.log('delete clicked on index:', index);
-    window.confirm(
-      `Are you sure you want to delete currency on index ${index}`
-    );
+  function handleDeleteClick(id: string) {
+    window.confirm('Are you sure you want to delete this currency exchange?');
+    if (localStorageData) {
+      const localStorageDataJson = JSON.parse(localStorageData);
+      axios
+        .delete(API_URL + `/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorageDataJson.token}`,
+          },
+        })
+        .then(() => setCrudAction('Deleted'));
+    }
+  }
+
+  function AddMoreClick() {
+    setIsAddCurrencyFormVisible(true);
+    setSelectedIdToEdit('');
+    setFrom('');
+    setTo('');
+    setRatio('');
   }
 
   function format(num: any) {
     return num.toFixed(4);
   }
 
-  function handleAmount1Change(amount1: number) {
-    // before changing amount1, re-calculate amount2
-    setAmount2(format(amount1 * rates[currency2]) / rates[currency1]);
-    setAmount1(amount1);
+  // normal calculation for amount
+  function handleAmountFromChange(amount: number) {
+    setAmountFrom(amount);
+    if (selectedExchangeRatio) {
+      setAmountTo(format(amount * selectedExchangeRatio.ratio));
+    }
   }
 
-  function handleCurrency1Change(currency1: string) {
-    setAmount2(format(amount1 * rates[currency2]) / rates[currency1]);
-    setCurrency1(currency1);
+  // normal calculation when changing currency selection
+  function handleCurrencyFromChange(selectedCurrency: string) {
+    setSelectedCurrencyFrom(selectedCurrency);
+    if (selectedExchangeRatio && amountFrom) {
+      setAmountTo(format(amountFrom * selectedExchangeRatio.ratio));
+      console.log('FROM CURR CHANGE', selectedExchangeRatio.ratio);
+    }
   }
 
-  function handleAmount2Change(amount2: number) {
-    setAmount1(format(amount2 * rates[currency1]) / rates[currency2]);
-    setAmount2(amount2);
+  // reverse calculation from amount
+  function handleAmountToChange(amount: number) {
+    setAmountTo(amount);
+    if (selectedExchangeRatio) {
+      setAmountFrom(format(amount / selectedExchangeRatio.ratio));
+    }
   }
 
-  function handleCurrency2Change(currency2: string) {
-    setAmount1(format(amount2 * rates[currency1]) / rates[currency2]);
-    setCurrency2(currency2);
-  }
-
-  function handleAddCurrency() {
-    setIsAddCurrencyFormVisible(true);
-    console.log('add currency clicked');
+  // reverse calculation when changing currency selection
+  function handleCurrencyToChange(selectedCurrency: string) {
+    setSelectedCurrencyTo(selectedCurrency);
+    if (selectedExchangeRatio && amountTo) {
+      setAmountFrom(format(amountTo / selectedExchangeRatio.ratio));
+      console.log('TO CURR CHANGE', selectedExchangeRatio.ratio);
+    }
   }
 
   function handleCurrencySubmit() {
     if (!from || !to || !ratio) {
       toast.error('Please fill all fields');
     } else {
-      toast.success('Currency added successfully');
-      console.log(from, to, ratio);
-      setFrom('');
-      setTo('');
-      setRatio('');
+      const currencyData = {
+        from: from,
+        to: to,
+        ratio: ratio,
+      };
+
+      if (localStorageData) {
+        const localStorageDataJson = JSON.parse(localStorageData);
+        if (selectedIdToEdit && selectedIdToEdit !== '') {
+          axios
+            .put(API_URL + `/${selectedIdToEdit}`, currencyData, {
+              headers: {
+                Authorization: `Bearer ${localStorageDataJson.token}`,
+              },
+            })
+            .then(() => {
+              setCrudAction('Updated');
+              // toast.success('Currency added successfully');
+              setFrom('');
+              setTo('');
+              setRatio('');
+            });
+        } else {
+          axios
+            .post(API_URL, currencyData, {
+              headers: {
+                Authorization: `Bearer ${localStorageDataJson.token}`,
+              },
+            })
+            .then(() => {
+              setCrudAction('Inserted');
+              // toast.success('Currency added successfully');
+              setFrom('');
+              setTo('');
+              setRatio('');
+            });
+        }
+      }
     }
   }
 
@@ -106,76 +201,72 @@ export default function Home(props: HomeProps) {
 
       <h1>Currency Calculator</h1>
 
+      {/* FROM */}
       <CurrencyInput
-        onAmountChange={handleAmount1Change}
-        onCurrencyChange={handleCurrency1Change}
-        currencies={Object.keys(rates)}
-        amount={amount1}
-        currency={currency1}
+        onAmountChange={handleAmountFromChange}
+        onCurrencyChange={handleCurrencyFromChange}
+        currencies={fromCurrenciesDropdownOptions}
+        amount={amountFrom}
+        currency={selectedCurrencyFrom}
       />
 
+      {/* TO */}
       <CurrencyInput
-        onAmountChange={handleAmount2Change}
-        onCurrencyChange={handleCurrency2Change}
-        currencies={Object.keys(rates)}
-        amount={amount2}
-        currency={currency2}
+        onAmountChange={handleAmountToChange}
+        onCurrencyChange={handleCurrencyToChange}
+        currencies={toCurrenciesDropdownOptions}
+        amount={amountTo}
+        currency={selectedCurrencyTo}
       />
 
-      {/* TABLE !!!!!!!!!!!!!!!!!!!!!!! */}
-      {/* {rates.length > 0 && ( */}
-      <table className='content-table'>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Ratio</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+      {/* CURRENCIES TABLE */}
+      {rates && rates.length > 0 && (
+        <table className='content-table'>
+          <thead>
+            <tr>
+              <th>From</th>
+              <th>To</th>
+              <th>Ratio</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          {tableData.map((item, index) => {
-            return (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.from}</td>
-                <td>{item.to}</td>
-                <td>{item.ratio}</td>
-                <td>
-                  {
-                    <FaEdit
-                      className='edit-icon'
-                      onClick={() => handleEditClick(index)}
-                    />
-                  }
-                  {
-                    <RiDeleteBin2Line
-                      className='delete-icon'
-                      onClick={() => handleDeleteClick(index)}
-                    />
-                  }
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      {/* )} */}
+          <tbody>
+            {rates.map((item) => {
+              return (
+                <tr key={item._id}>
+                  <td>{item.from}</td>
+                  <td>{item.to}</td>
+                  <td>{format(item.ratio)}</td>
+                  <td>
+                    {
+                      <FaEdit
+                        className='edit-icon'
+                        onClick={() => handleEditClick(item)}
+                      />
+                    }
+                    {
+                      <RiDeleteBin2Line
+                        className='delete-icon'
+                        onClick={() => handleDeleteClick(item._id)}
+                      />
+                    }
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
 
       <div
-        className={
-          isAddCurrencyFormVisible
-            ? 'add-currency-button disabled'
-            : 'add-currency-button'
-        }
-        onClick={handleAddCurrency}
+        className={isAddCurrencyFormVisible ? 'add-more disabled' : 'add-more'}
+        onClick={() => AddMoreClick()}
       >
-        <IoMdAdd /> Add Currency
+        <IoMdAdd /> Add More
       </div>
 
-      {/* ADD CURRENCY FORM !!!!!!!!!!!!!!!!!!!!! */}
+      {/* ADD CURRENCY FORM */}
       {isAddCurrencyFormVisible && (
         <div className='add-currency-container'>
           <form onSubmit={handleCurrencySubmit}>
@@ -200,7 +291,15 @@ export default function Home(props: HomeProps) {
           </form>
 
           <div className='add-currency-button-container'>
-            <button onClick={handleCurrencySubmit}>Add</button>
+            {selectedIdToEdit ? (
+              <button onClick={handleCurrencySubmit} className='update-button'>
+                Update
+              </button>
+            ) : (
+              <button onClick={handleCurrencySubmit} className='add-button'>
+                Add
+              </button>
+            )}
             <button onClick={() => setIsAddCurrencyFormVisible(false)}>
               Cancel
             </button>
