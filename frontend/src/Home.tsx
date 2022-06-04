@@ -17,6 +17,7 @@ const API_URL = 'http://localhost:5000/api/currency_exchange_rates';
 
 export default function Home() {
   const localStorageData = localStorage.getItem('user');
+  const isUserLoggedIn = localStorage.getItem('user');
   const [rates, setRates] = useState<IRates[]>();
 
   // Currency Input / Select
@@ -220,7 +221,7 @@ export default function Home() {
       />
 
       {/* CURRENCIES TABLE */}
-      {rates && rates.length > 0 && (
+      {isUserLoggedIn && rates && rates.length > 0 && (
         <table className='content-table'>
           <thead>
             <tr>
@@ -259,12 +260,16 @@ export default function Home() {
         </table>
       )}
 
-      <div
-        className={isAddCurrencyFormVisible ? 'add-more disabled' : 'add-more'}
-        onClick={() => AddMoreClick()}
-      >
-        <IoMdAdd /> Add More
-      </div>
+      {isUserLoggedIn && (
+        <div
+          className={
+            isAddCurrencyFormVisible ? 'add-more disabled' : 'add-more'
+          }
+          onClick={() => AddMoreClick()}
+        >
+          <IoMdAdd /> Add More
+        </div>
+      )}
 
       {/* ADD CURRENCY FORM */}
       {isAddCurrencyFormVisible && (
