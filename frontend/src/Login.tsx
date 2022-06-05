@@ -28,18 +28,19 @@ export default function Login() {
           email: email,
           password: password,
         };
-        axios.post(API_USER_URL + 'login', userData).then((res) => {
-          // console.log('res!!!', res);
-          
-          // if (res.data.code === 'ERR_BAD_REQUEST') { // TODO:
-          //   toast.error('Wrong email and/or password');
-          // }
-
-          localStorage.setItem('user', JSON.stringify(res.data));
-          toast.success('Welcome back!');
-          resetAllFields();
-          navigate('/');
-        });
+        axios
+          .post(API_USER_URL + 'login', userData)
+          .then((res) => {
+            localStorage.setItem('user', JSON.stringify(res.data));
+            toast.success('Welcome back!');
+            resetAllFields();
+            navigate('/');
+          })
+          .catch((res) => {
+            if (res.code === 'ERR_BAD_REQUEST') {
+              toast.error('Wrong email and/or password');
+            }
+          });
       } catch (error) {
         console.log(error);
       }

@@ -13,6 +13,7 @@ export default function CurrencyInput(props: CurrencyInputProps) {
     <div className='group'>
       <input
         type='number'
+        min={0}
         value={props.amount || ''}
         onChange={(e) => props.onAmountChange(e.target.value)}
       />

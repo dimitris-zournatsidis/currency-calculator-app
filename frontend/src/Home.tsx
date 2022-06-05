@@ -6,7 +6,7 @@ import { FaEdit } from 'react-icons/fa';
 import { RiDeleteBin2Line } from 'react-icons/ri';
 import { IoMdAdd } from 'react-icons/io';
 import { toast } from 'react-toastify';
-interface IRates {
+interface IRate {
   _id: string;
   from: string;
   to: string;
@@ -19,14 +19,14 @@ export default function Home() {
   // the code below is used for crud operations / check if a user is logged in
   const localStorageData = localStorage.getItem('user');
 
-  const [rates, setRates] = useState<IRates[]>();
+  const [rates, setRates] = useState<IRate[]>();
 
   // Currency Input / Select
-  const [amountFrom, setAmountFrom] = useState<number>();
+  const [amountFrom, setAmountFrom] = useState<number>(1);
   const [amountTo, setAmountTo] = useState<number>();
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] = useState('');
   const [selectedCurrencyTo, setSelectedCurrencyTo] = useState('');
-  const [selectedExchangeRatio, setSelectedExchangeRatio] = useState<IRates>();
+  const [selectedExchangeRatio, setSelectedExchangeRatio] = useState<number>();
 
   // CRUD currency form
   const [isCurrencyFormVisible, setIsCurrencyFormVisible] = useState(false);
@@ -39,42 +39,66 @@ export default function Home() {
   const [crudAction, setCrudAction] = useState('');
 
   // Dropdown options
-  const [fromCurrenciesDropdownOptions, setFromCurrenciesDropdownOptions] =
-    useState<string[]>([]);
-  const [toCurrenciesDropdownOptions, setToCurrenciesDropdownOptions] =
-    useState<string[]>([]);
+  const [currenciesDropdownOptions, setCurrenciesDropdownOptions] = useState<
+    string[]
+  >([]);
 
   // Get all Currency Exchanges
   useEffect(() => {
-    console.log('xanaetrexe!!!!!!!!');
     axios.get(API_CURRENCY_URL).then((res) => {
       setRates(res.data);
 
-      let fromTemp: string[] = [];
-      let toTemp: string[] = [];
-      res.data.map((item: IRates, index: number) => {
+      let temp: string[] = [];
+      // eslint-disable-next-line array-callback-return
+      res.data.map((item: IRate, index: number) => {
         if (index === 0) {
           setSelectedCurrencyFrom(item.from);
           setSelectedCurrencyTo(item.to);
         }
-        fromTemp.push(item.from);
-        toTemp.push(item.to);
-        return true;
+        temp.push(item.from, item.to);
       });
-      setFromCurrenciesDropdownOptions(fromTemp);
-      setToCurrenciesDropdownOptions(toTemp);
+      const uniqueArray = [...Array.from(new Set(temp))];
+      setCurrenciesDropdownOptions(uniqueArray);
     });
   }, [crudAction]);
 
   // Get one Currency Exchange
   useEffect(() => {
-    console.log('xanaetrexe to ena 11111');
     axios
       .get(API_CURRENCY_URL + `/${selectedCurrencyFrom}/${selectedCurrencyTo}`)
       .then((res) => {
-        setSelectedExchangeRatio(res.data);
+        if (res.data !== null) {
+          setSelectedExchangeRatio(res.data.ratio);
+        } else {
+          axios
+            .get(
+              API_CURRENCY_URL +
+                `/${selectedCurrencyTo}/${selectedCurrencyFrom}`
+            )
+            .then((res) => {
+              if (res.data !== null) {
+                setSelectedExchangeRatio(1 / res.data.ratio);
+              } else if (selectedCurrencyFrom === selectedCurrencyTo) {
+                setSelectedExchangeRatio(1);
+              } else {
+                toast.warning(
+                  'No such currency exchange exists! Try another combination'
+                );
+              }
+            });
+        }
       });
   }, [selectedCurrencyFrom, selectedCurrencyTo]);
+
+  // Re-calculate
+  useEffect(() => {
+    if (selectedExchangeRatio && amountFrom) {
+      setAmountTo(format(amountFrom * selectedExchangeRatio));
+    } else {
+      setAmountTo(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedExchangeRatio]);
 
   function handleLogout() {
     localStorage.removeItem('user');
@@ -82,7 +106,7 @@ export default function Home() {
   }
 
   // Edit Currency
-  function handleEditClick(item: IRates) {
+  function handleEditClick(item: IRate) {
     setSelectedIdToEdit(item._id);
     setIsCurrencyFormVisible(true);
 
@@ -120,40 +144,30 @@ export default function Home() {
     return num.toFixed(4);
   }
 
-  // Normal calculation for amount
+  // Calculation for amount from
   function handleAmountFromChange(amount: number) {
     setAmountFrom(amount);
     if (selectedExchangeRatio) {
-      setAmountTo(format(amount * selectedExchangeRatio.ratio));
+      setAmountTo(format(amount * selectedExchangeRatio));
     }
   }
 
-  // Normal calculation when changing currency selection
-  function handleCurrencyFromChange(selectedCurrency: string) {
-    setSelectedCurrencyFrom(selectedCurrency);
-
-    if (selectedExchangeRatio && amountFrom) {
-      setAmountTo(format(amountFrom * selectedExchangeRatio.ratio));
-      console.log('FROM CURR CHANGE', selectedExchangeRatio.ratio);
-    }
-  }
-
-  // Reverse calculation from amount
+  // Calculation for amount to
   function handleAmountToChange(amount: number) {
     setAmountTo(amount);
     if (selectedExchangeRatio) {
-      setAmountFrom(format(amount / selectedExchangeRatio.ratio));
+      setAmountFrom(format(amount / selectedExchangeRatio));
     }
   }
 
-  // Reverse calculation when changing currency selection
+  // Calculation when changing currency from
+  function handleCurrencyFromChange(selectedCurrency: string) {
+    setSelectedCurrencyFrom(selectedCurrency);
+  }
+
+  // Calculation when changing currency to
   function handleCurrencyToChange(selectedCurrency: string) {
     setSelectedCurrencyTo(selectedCurrency);
-
-    if (selectedExchangeRatio && amountTo) {
-      setAmountFrom(format(amountTo / selectedExchangeRatio.ratio));
-      console.log('TO CURR CHANGE', selectedExchangeRatio.ratio);
-    }
   }
 
   // Submit currency for Add / Update
@@ -216,7 +230,7 @@ export default function Home() {
       <CurrencyInput
         onAmountChange={handleAmountFromChange}
         onCurrencyChange={handleCurrencyFromChange}
-        currencies={fromCurrenciesDropdownOptions}
+        currencies={currenciesDropdownOptions}
         amount={amountFrom}
         currency={selectedCurrencyFrom}
       />
@@ -225,7 +239,7 @@ export default function Home() {
       <CurrencyInput
         onAmountChange={handleAmountToChange}
         onCurrencyChange={handleCurrencyToChange}
-        currencies={toCurrenciesDropdownOptions}
+        currencies={currenciesDropdownOptions}
         amount={amountTo}
         currency={selectedCurrencyTo}
       />
@@ -272,7 +286,7 @@ export default function Home() {
         </table>
       )}
 
-      {/* ADD MORE BUTTON || info on when add, edit, update and delete are available */}
+      {/* ADD MORE BUTTON || information on when add/edit/update/delete are available */}
       {localStorageData ? (
         <div
           className={isCurrencyFormVisible ? 'add-more disabled' : 'add-more'}
