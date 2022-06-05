@@ -15,6 +15,13 @@ h1 {
   font-size: 2rem;
 }
 
+.info-text {
+  font-size: 0.65rem;
+  text-align: center;
+  font-weight: 400;
+  padding: 0 3rem;
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -135,7 +142,7 @@ form button {
   cursor: default;
 }
 
-/* ADD CURRENCY FORM */
+/* CURRENCY FORM */
 .add-currency-container {
   display: flex;
   flex-direction: column;
@@ -158,7 +165,7 @@ form button {
 }
 
 .add-currency-button-container .update-button {
-  background-color: rgb(44,130,201);
+  background-color: rgb(44, 130, 201);
 }
 
 .add-currency-button-container .add-button {
@@ -166,5 +173,5 @@ form button {
 }
 
 .add-currency-button-container button:last-child {
-  background-color: rgb(220,20,60);
+  background-color: rgb(220, 20, 60);
 }

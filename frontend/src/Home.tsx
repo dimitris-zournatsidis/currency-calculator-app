@@ -16,7 +16,7 @@ interface IRates {
 const API_CURRENCY_URL = 'http://localhost:5000/api/currency_exchange_rates';
 
 export default function Home() {
-  // the code below is also used to check if user is logged in
+  // the code below is used for crud operations / check if a user is logged in
   const localStorageData = localStorage.getItem('user');
 
   const [rates, setRates] = useState<IRates[]>();
@@ -29,8 +29,7 @@ export default function Home() {
   const [selectedExchangeRatio, setSelectedExchangeRatio] = useState<IRates>();
 
   // CRUD currency form
-  const [isAddCurrencyFormVisible, setIsAddCurrencyFormVisible] =
-    useState(false);
+  const [isCurrencyFormVisible, setIsCurrencyFormVisible] = useState(false);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [ratio, setRatio] = useState('');
@@ -85,7 +84,7 @@ export default function Home() {
   // Edit Currency
   function handleEditClick(item: IRates) {
     setSelectedIdToEdit(item._id);
-    setIsAddCurrencyFormVisible(true);
+    setIsCurrencyFormVisible(true);
 
     setFrom(item.from);
     setTo(item.to);
@@ -109,7 +108,7 @@ export default function Home() {
   }
 
   function addMoreClick() {
-    setIsAddCurrencyFormVisible(true);
+    setIsCurrencyFormVisible(true);
     setSelectedIdToEdit('');
 
     setFrom('');
@@ -132,6 +131,7 @@ export default function Home() {
   // Normal calculation when changing currency selection
   function handleCurrencyFromChange(selectedCurrency: string) {
     setSelectedCurrencyFrom(selectedCurrency);
+
     if (selectedExchangeRatio && amountFrom) {
       setAmountTo(format(amountFrom * selectedExchangeRatio.ratio));
       console.log('FROM CURR CHANGE', selectedExchangeRatio.ratio);
@@ -149,13 +149,14 @@ export default function Home() {
   // Reverse calculation when changing currency selection
   function handleCurrencyToChange(selectedCurrency: string) {
     setSelectedCurrencyTo(selectedCurrency);
+
     if (selectedExchangeRatio && amountTo) {
       setAmountFrom(format(amountTo / selectedExchangeRatio.ratio));
       console.log('TO CURR CHANGE', selectedExchangeRatio.ratio);
     }
   }
 
-  // Submit currency from for both Add & Update
+  // Submit currency for Add / Update
   function handleCurrencySubmit() {
     if (!from || !to || !ratio) {
       toast.error('Please fill all fields');
@@ -168,7 +169,7 @@ export default function Home() {
 
       if (localStorageData) {
         const localStorageDataJson = JSON.parse(localStorageData);
-
+        // edit form
         if (selectedIdToEdit && selectedIdToEdit !== '') {
           axios
             .put(API_CURRENCY_URL + `/${selectedIdToEdit}`, currencyData, {
@@ -185,6 +186,7 @@ export default function Home() {
               setRatio('');
             });
         } else {
+          // add form
           axios
             .post(API_CURRENCY_URL, currencyData, {
               headers: {
@@ -228,15 +230,15 @@ export default function Home() {
         currency={selectedCurrencyTo}
       />
 
-      {/* CURRENCIES TABLE - Visible only if a user is logged in */}
-      {localStorageData && rates && rates.length > 0 && (
+      {/* CURRENCIES TABLE - Edit and delete actions are visible only if a user is logged in */}
+      {rates && rates.length > 0 && (
         <table className='content-table'>
           <thead>
             <tr>
               <th>From</th>
               <th>To</th>
               <th>Ratio</th>
-              <th>Actions</th>
+              {localStorageData && <th>Actions</th>}
             </tr>
           </thead>
 
@@ -247,20 +249,22 @@ export default function Home() {
                   <td>{item.from}</td>
                   <td>{item.to}</td>
                   <td>{format(item.ratio)}</td>
-                  <td>
-                    {
-                      <FaEdit
-                        className='edit-icon'
-                        onClick={() => handleEditClick(item)}
-                      />
-                    }
-                    {
-                      <RiDeleteBin2Line
-                        className='delete-icon'
-                        onClick={() => handleDeleteClick(item._id)}
-                      />
-                    }
-                  </td>
+                  {localStorageData && (
+                    <td>
+                      {
+                        <FaEdit
+                          className='edit-icon'
+                          onClick={() => handleEditClick(item)}
+                        />
+                      }
+                      {
+                        <RiDeleteBin2Line
+                          className='delete-icon'
+                          onClick={() => handleDeleteClick(item._id)}
+                        />
+                      }
+                    </td>
+                  )}
                 </tr>
               );
             })}
@@ -268,20 +272,23 @@ export default function Home() {
         </table>
       )}
 
-      {/* ADD MORE BUTTON - Visible only if a user is logged in */}
-      {localStorageData && (
+      {/* ADD MORE BUTTON || info on when add, edit, update and delete are available */}
+      {localStorageData ? (
         <div
-          className={
-            isAddCurrencyFormVisible ? 'add-more disabled' : 'add-more'
-          }
+          className={isCurrencyFormVisible ? 'add-more disabled' : 'add-more'}
           onClick={() => addMoreClick()}
         >
           <IoMdAdd /> Add More
         </div>
+      ) : (
+        <p className='info-text'>
+          * In order to add, edit, update or delete a currency exchange ratio,
+          you have to be logged in
+        </p>
       )}
 
       {/* ADD CURRENCY FORM */}
-      {isAddCurrencyFormVisible && (
+      {isCurrencyFormVisible && (
         <div className='add-currency-container'>
           <form onSubmit={handleCurrencySubmit}>
             <input
@@ -312,7 +319,7 @@ export default function Home() {
               {selectedIdToEdit ? 'Update' : 'Add'}
             </button>
 
-            <button onClick={() => setIsAddCurrencyFormVisible(false)}>
+            <button onClick={() => setIsCurrencyFormVisible(false)}>
               Cancel
             </button>
           </div>

@@ -29,13 +29,18 @@ export default function Login() {
           password: password,
         };
         axios.post(API_USER_URL + 'login', userData).then((res) => {
+          // console.log('res!!!', res);
+          
+          // if (res.data.code === 'ERR_BAD_REQUEST') { // TODO:
+          //   toast.error('Wrong email and/or password');
+          // }
+
           localStorage.setItem('user', JSON.stringify(res.data));
           toast.success('Welcome back!');
           resetAllFields();
           navigate('/');
         });
       } catch (error) {
-        toast.error('Wrong email and/or password'); // TODO:
         console.log(error);
       }
     }

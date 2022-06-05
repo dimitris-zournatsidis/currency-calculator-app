@@ -16,13 +16,14 @@ export default function CurrencyInput(props: CurrencyInputProps) {
         value={props.amount || ''}
         onChange={(e) => props.onAmountChange(e.target.value)}
       />
+      
       <select
         value={props.currency || ''}
         onChange={(e) => props.onCurrencyChange(e.target.value)}
       >
-        {props.currencies.map((currency) => {
+        {props.currencies.map((currency, index) => {
           return (
-            <option key={currency} value={currency}>
+            <option key={index} value={currency}>
               {currency}
             </option>
           );
