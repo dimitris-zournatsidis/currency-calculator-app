@@ -13,11 +13,12 @@ interface IRates {
   ratio: number;
 }
 
-const API_URL = 'http://localhost:5000/api/currency_exchange_rates';
+const API_CURRENCY_URL = 'http://localhost:5000/api/currency_exchange_rates';
 
 export default function Home() {
+  // the code below is also used to check if user is logged in
   const localStorageData = localStorage.getItem('user');
-  const isUserLoggedIn = localStorage.getItem('user');
+
   const [rates, setRates] = useState<IRates[]>();
 
   // Currency Input / Select
@@ -27,7 +28,7 @@ export default function Home() {
   const [selectedCurrencyTo, setSelectedCurrencyTo] = useState('');
   const [selectedExchangeRatio, setSelectedExchangeRatio] = useState<IRates>();
 
-  // Crud currency form
+  // CRUD currency form
   const [isAddCurrencyFormVisible, setIsAddCurrencyFormVisible] =
     useState(false);
   const [from, setFrom] = useState('');
@@ -35,6 +36,7 @@ export default function Home() {
   const [ratio, setRatio] = useState('');
   const [selectedIdToEdit, setSelectedIdToEdit] = useState('');
 
+  // the line below is used to force re-render
   const [crudAction, setCrudAction] = useState('');
 
   // Dropdown options
@@ -46,22 +48,22 @@ export default function Home() {
   // Get all Currency Exchanges
   useEffect(() => {
     console.log('xanaetrexe!!!!!!!!');
-    axios.get(API_URL).then((res) => {
+    axios.get(API_CURRENCY_URL).then((res) => {
       setRates(res.data);
 
-      let from: string[] = [];
-      let to: string[] = [];
+      let fromTemp: string[] = [];
+      let toTemp: string[] = [];
       res.data.map((item: IRates, index: number) => {
         if (index === 0) {
           setSelectedCurrencyFrom(item.from);
           setSelectedCurrencyTo(item.to);
         }
-        from.push(item.from);
-        to.push(item.to);
+        fromTemp.push(item.from);
+        toTemp.push(item.to);
         return true;
       });
-      setFromCurrenciesDropdownOptions(from);
-      setToCurrenciesDropdownOptions(to);
+      setFromCurrenciesDropdownOptions(fromTemp);
+      setToCurrenciesDropdownOptions(toTemp);
     });
   }, [crudAction]);
 
@@ -69,9 +71,8 @@ export default function Home() {
   useEffect(() => {
     console.log('xanaetrexe to ena 11111');
     axios
-      .get(API_URL + `/${selectedCurrencyFrom}/${selectedCurrencyTo}`)
+      .get(API_CURRENCY_URL + `/${selectedCurrencyFrom}/${selectedCurrencyTo}`)
       .then((res) => {
-        // console.log('res data!!', res.data);
         setSelectedExchangeRatio(res.data);
       });
   }, [selectedCurrencyFrom, selectedCurrencyTo]);
@@ -81,20 +82,24 @@ export default function Home() {
     window.location.reload();
   }
 
+  // Edit Currency
   function handleEditClick(item: IRates) {
     setSelectedIdToEdit(item._id);
     setIsAddCurrencyFormVisible(true);
+
     setFrom(item.from);
     setTo(item.to);
     setRatio(item.ratio.toString());
   }
 
+  // Delete Currency
   function handleDeleteClick(id: string) {
     window.confirm('Are you sure you want to delete this currency exchange?');
+
     if (localStorageData) {
       const localStorageDataJson = JSON.parse(localStorageData);
       axios
-        .delete(API_URL + `/${id}`, {
+        .delete(API_CURRENCY_URL + `/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorageDataJson.token}`,
           },
@@ -103,9 +108,10 @@ export default function Home() {
     }
   }
 
-  function AddMoreClick() {
+  function addMoreClick() {
     setIsAddCurrencyFormVisible(true);
     setSelectedIdToEdit('');
+
     setFrom('');
     setTo('');
     setRatio('');
@@ -115,7 +121,7 @@ export default function Home() {
     return num.toFixed(4);
   }
 
-  // normal calculation for amount
+  // Normal calculation for amount
   function handleAmountFromChange(amount: number) {
     setAmountFrom(amount);
     if (selectedExchangeRatio) {
@@ -123,7 +129,7 @@ export default function Home() {
     }
   }
 
-  // normal calculation when changing currency selection
+  // Normal calculation when changing currency selection
   function handleCurrencyFromChange(selectedCurrency: string) {
     setSelectedCurrencyFrom(selectedCurrency);
     if (selectedExchangeRatio && amountFrom) {
@@ -132,7 +138,7 @@ export default function Home() {
     }
   }
 
-  // reverse calculation from amount
+  // Reverse calculation from amount
   function handleAmountToChange(amount: number) {
     setAmountTo(amount);
     if (selectedExchangeRatio) {
@@ -140,7 +146,7 @@ export default function Home() {
     }
   }
 
-  // reverse calculation when changing currency selection
+  // Reverse calculation when changing currency selection
   function handleCurrencyToChange(selectedCurrency: string) {
     setSelectedCurrencyTo(selectedCurrency);
     if (selectedExchangeRatio && amountTo) {
@@ -149,6 +155,7 @@ export default function Home() {
     }
   }
 
+  // Submit currency from for both Add & Update
   function handleCurrencySubmit() {
     if (!from || !to || !ratio) {
       toast.error('Please fill all fields');
@@ -161,30 +168,33 @@ export default function Home() {
 
       if (localStorageData) {
         const localStorageDataJson = JSON.parse(localStorageData);
+
         if (selectedIdToEdit && selectedIdToEdit !== '') {
           axios
-            .put(API_URL + `/${selectedIdToEdit}`, currencyData, {
+            .put(API_CURRENCY_URL + `/${selectedIdToEdit}`, currencyData, {
               headers: {
                 Authorization: `Bearer ${localStorageDataJson.token}`,
               },
             })
             .then(() => {
+              // trigger a re-render
               setCrudAction('Updated');
-              // toast.success('Currency added successfully');
+
               setFrom('');
               setTo('');
               setRatio('');
             });
         } else {
           axios
-            .post(API_URL, currencyData, {
+            .post(API_CURRENCY_URL, currencyData, {
               headers: {
                 Authorization: `Bearer ${localStorageDataJson.token}`,
               },
             })
             .then(() => {
+              // trigger a re-render
               setCrudAction('Inserted');
-              // toast.success('Currency added successfully');
+
               setFrom('');
               setTo('');
               setRatio('');
@@ -218,8 +228,8 @@ export default function Home() {
         currency={selectedCurrencyTo}
       />
 
-      {/* CURRENCIES TABLE */}
-      {isUserLoggedIn && rates && rates.length > 0 && (
+      {/* CURRENCIES TABLE - Visible only if a user is logged in */}
+      {localStorageData && rates && rates.length > 0 && (
         <table className='content-table'>
           <thead>
             <tr>
@@ -258,12 +268,13 @@ export default function Home() {
         </table>
       )}
 
-      {isUserLoggedIn && (
+      {/* ADD MORE BUTTON - Visible only if a user is logged in */}
+      {localStorageData && (
         <div
           className={
             isAddCurrencyFormVisible ? 'add-more disabled' : 'add-more'
           }
-          onClick={() => AddMoreClick()}
+          onClick={() => addMoreClick()}
         >
           <IoMdAdd /> Add More
         </div>
@@ -294,15 +305,13 @@ export default function Home() {
           </form>
 
           <div className='add-currency-button-container'>
-            {selectedIdToEdit ? (
-              <button onClick={handleCurrencySubmit} className='update-button'>
-                Update
-              </button>
-            ) : (
-              <button onClick={handleCurrencySubmit} className='add-button'>
-                Add
-              </button>
-            )}
+            <button
+              onClick={handleCurrencySubmit}
+              className={selectedIdToEdit ? 'update-button' : 'add-button'}
+            >
+              {selectedIdToEdit ? 'Update' : 'Add'}
+            </button>
+
             <button onClick={() => setIsAddCurrencyFormVisible(false)}>
               Cancel
             </button>

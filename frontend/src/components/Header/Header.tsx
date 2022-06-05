@@ -9,6 +9,7 @@ interface HeaderProps {
 }
 
 export default function Header(props: HeaderProps) {
+  // Check if user is logged in
   const isUserLoggedIn = localStorage.getItem('user');
 
   return (

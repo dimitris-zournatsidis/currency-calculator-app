@@ -4,6 +4,8 @@ import { TiArrowBackOutline } from 'react-icons/ti';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+const API_USER_URL = 'http://localhost:5000/api/users/';
+
 export default function Register() {
   const navigate = useNavigate();
 
@@ -37,9 +39,9 @@ export default function Register() {
         password: password,
       };
       try {
-        axios.post('http://localhost:5000/api/users/', userData).then((res) => {
+        axios.post(API_USER_URL, userData).then((res) => {
           localStorage.setItem('user', JSON.stringify(res.data));
-          toast.success('User signed in successfully');
+          toast.success('User registered successfully');
           resetAllFields();
           navigate('/');
         });

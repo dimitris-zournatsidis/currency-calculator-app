@@ -16,7 +16,12 @@ export default function App() {
           <Route path='/' element={<Home />} />
         </Routes>
       </Router>
-      <ToastContainer autoClose={3500} theme={'colored'} />
+
+      <ToastContainer
+        position='bottom-right'
+        autoClose={5000}
+        theme={'colored'}
+      />
     </>
   );
 }

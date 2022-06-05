@@ -4,8 +4,11 @@ import { TiArrowBackOutline } from 'react-icons/ti';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+const API_USER_URL = 'http://localhost:5000/api/users/';
+
 export default function Login() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,22 +21,21 @@ export default function Login() {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error('Please add your credentials');
+      toast.error('Please add your email and password');
     } else {
       try {
         const userData = {
           email: email,
           password: password,
         };
-        axios
-          .post('http://localhost:5000/api/users/login', userData)
-          .then((res) => {
-            localStorage.setItem('user', JSON.stringify(res.data));
-            toast.success('Welcome back!');
-            resetAllFields();
-            navigate('/');
-          });
+        axios.post(API_USER_URL + 'login', userData).then((res) => {
+          localStorage.setItem('user', JSON.stringify(res.data));
+          toast.success('Welcome back!');
+          resetAllFields();
+          navigate('/');
+        });
       } catch (error) {
+        toast.error('Wrong email and/or password'); // TODO:
         console.log(error);
       }
     }

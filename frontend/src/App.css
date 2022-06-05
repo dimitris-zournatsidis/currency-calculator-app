@@ -68,7 +68,7 @@ form button {
 @media (min-width: 801px) {
   .content-table {
     margin: 4rem auto 2rem;
-    width: 50%;
+    width: 30%;
   }
 }
 
@@ -158,13 +158,13 @@ form button {
 }
 
 .add-currency-button-container .update-button {
-  background-color: blue;
+  background-color: rgb(44,130,201);
 }
 
 .add-currency-button-container .add-button {
-  background-color: green;
+  background-color: rgb(80, 200, 120);
 }
 
 .add-currency-button-container button:last-child {
-  background-color: red;
+  background-color: rgb(220,20,60);
 }

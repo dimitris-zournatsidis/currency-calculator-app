@@ -51,8 +51,6 @@ const updateCurrencyExchange = asyncHandler(async (req, res) => {
       new: true,
     }
   );
-
-  console.log('updated!!!', updatedCurrencyExchange);
   res.status(200).json(updatedCurrencyExchange);
 });
 
