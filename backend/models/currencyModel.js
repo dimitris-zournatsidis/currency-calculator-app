@@ -6,9 +6,7 @@ const currencyExchangeSchema = mongoose.Schema(
     to: String,
     ratio: Number,
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model('CurrencyExchange', currencyExchangeSchema);

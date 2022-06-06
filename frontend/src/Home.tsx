@@ -16,7 +16,7 @@ interface IRate {
 const API_CURRENCY_URL = 'http://localhost:5000/api/currency_exchange_rates';
 
 export default function Home() {
-  // the code below is used for crud operations / check if a user is logged in
+  // the code below is used for crud operations & check if a user is logged in
   const localStorageData = localStorage.getItem('user');
 
   const [rates, setRates] = useState<IRate[]>();
@@ -82,7 +82,7 @@ export default function Home() {
                 setSelectedExchangeRatio(1);
               } else {
                 toast.warning(
-                  'No such currency exchange exists! Try another combination'
+                  'No such currency exchange exists! Please try another combination.'
                 );
               }
             });
@@ -144,7 +144,7 @@ export default function Home() {
     return num.toFixed(4);
   }
 
-  // Calculation for amount from
+  // Calculate amount from
   function handleAmountFromChange(amount: number) {
     setAmountFrom(amount);
     if (selectedExchangeRatio) {
@@ -152,7 +152,7 @@ export default function Home() {
     }
   }
 
-  // Calculation for amount to
+  // Calculate amount to
   function handleAmountToChange(amount: number) {
     setAmountTo(amount);
     if (selectedExchangeRatio) {
@@ -170,7 +170,7 @@ export default function Home() {
     setSelectedCurrencyTo(selectedCurrency);
   }
 
-  // Submit currency for Add / Update
+  // Submit currency for Add or Update
   function handleCurrencySubmit() {
     if (!from || !to || !ratio) {
       toast.error('Please fill all fields');

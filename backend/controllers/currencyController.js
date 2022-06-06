@@ -1,9 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const CurrencyExchanges = require('../models/currencyModel');
 
-// @desc Get Currency Exchanges
-// @route GET /api/currency_exchange_rates
-// @access Private
+// Get Currency Exchanges
+// GET /api/currency_exchange_rates
 const getCurrencyExchanges = asyncHandler(async (req, res) => {
   let currencyExchanges;
   if (req.params.from && req.params.to) {
@@ -17,9 +16,8 @@ const getCurrencyExchanges = asyncHandler(async (req, res) => {
   res.status(200).json(currencyExchanges);
 });
 
-// @desc Create Currency Exchange
-// @route POST /api/currency_exchange_rates
-// @access Private
+// Create Currency Exchange
+// POST /api/currency_exchange_rates
 const createCurrencyExchange = asyncHandler(async (req, res) => {
   if (!req.body.from || !req.body.to || !req.body.ratio) {
     res.status(400);
@@ -34,9 +32,8 @@ const createCurrencyExchange = asyncHandler(async (req, res) => {
   res.status(200).json(currencyExchanges);
 });
 
-// @desc Update Currency Exchange
-// @route PUT /api/currency_exchange_rates:id
-// @access Private
+// Update Currency Exchange
+// PUT /api/currency_exchange_rates:id
 const updateCurrencyExchange = asyncHandler(async (req, res) => {
   const currencyExchange = await CurrencyExchanges.findById(req.params.id);
   if (!currencyExchange) {
@@ -47,16 +44,13 @@ const updateCurrencyExchange = asyncHandler(async (req, res) => {
   const updatedCurrencyExchange = await CurrencyExchanges.findByIdAndUpdate(
     req.params.id,
     req.body,
-    {
-      new: true,
-    }
+    { new: true }
   );
   res.status(200).json(updatedCurrencyExchange);
 });
 
-// @desc Delete Currency Exchange
-// @route DELETE /api/currency_exchange_rates/:id
-// @access Private
+// Delete Currency Exchange
+// DELETE /api/currency_exchange_rates/:id
 const deleteCurrencyExchange = asyncHandler(async (req, res) => {
   const currencyExchanges = await CurrencyExchanges.findById(req.params.id);
   if (!currencyExchanges) {

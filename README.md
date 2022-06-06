@@ -10,12 +10,12 @@ A currency calculator using MERN Stack (MongoDB, Express, React, Node.js).
 Clone the repository to your local environment or download the ZIP file.\
 Run `npm install` in both root and frontend directories.
 
-## Running Application
+## Running the Application
 In order to run concurrently server and client, run:
 
 `npm run dev` in the root directory.
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The endpoints are located in [http://localhost:5000](http://localhost:5000).
 

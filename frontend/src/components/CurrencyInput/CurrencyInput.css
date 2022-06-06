@@ -36,6 +36,8 @@ input {
   padding: 0.2rem 0.5rem;
 }
 
-select, option {
+select,
+option {
   text-align: right;
+  cursor: pointer;
 }
