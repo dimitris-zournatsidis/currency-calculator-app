@@ -16,7 +16,7 @@ interface IRate {
 const API_CURRENCY_URL = 'http://localhost:5000/api/currency_exchange_rates';
 
 export default function Home() {
-  // the code below is used for crud operations & check if a user is logged in
+  // the code below is used for crud operations & for checking if a user is logged in
   const localStorageData = localStorage.getItem('user');
 
   const [rates, setRates] = useState<IRate[]>();
@@ -100,11 +100,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedExchangeRatio]);
 
-  function handleLogout() {
-    localStorage.removeItem('user');
-    window.location.reload();
-  }
-
   // Edit Currency
   function handleEditClick(item: IRate) {
     setSelectedIdToEdit(item._id);
@@ -144,7 +139,7 @@ export default function Home() {
     return num.toFixed(4);
   }
 
-  // Calculate amount from
+  // Re-calculate amount-to when changing amount-from
   function handleAmountFromChange(amount: number) {
     setAmountFrom(amount);
     if (selectedExchangeRatio) {
@@ -152,7 +147,7 @@ export default function Home() {
     }
   }
 
-  // Calculate amount to
+  // Re-calculate amount-from when changing amount-to
   function handleAmountToChange(amount: number) {
     setAmountTo(amount);
     if (selectedExchangeRatio) {
@@ -160,12 +155,12 @@ export default function Home() {
     }
   }
 
-  // Calculation when changing currency from
+  // Calculation when changing currency-from
   function handleCurrencyFromChange(selectedCurrency: string) {
     setSelectedCurrencyFrom(selectedCurrency);
   }
 
-  // Calculation when changing currency to
+  // Calculation when changing currency-to
   function handleCurrencyToChange(selectedCurrency: string) {
     setSelectedCurrencyTo(selectedCurrency);
   }
@@ -181,9 +176,10 @@ export default function Home() {
         ratio: ratio,
       };
 
+      // check if there is a user logged in
       if (localStorageData) {
         const localStorageDataJson = JSON.parse(localStorageData);
-        // edit form
+        // edit selected currency exchange
         if (selectedIdToEdit && selectedIdToEdit !== '') {
           axios
             .put(API_CURRENCY_URL + `/${selectedIdToEdit}`, currencyData, {
@@ -220,6 +216,12 @@ export default function Home() {
     }
   }
 
+  // Logout User
+  function handleLogout() {
+    localStorage.removeItem('user');
+    window.location.reload();
+  }
+
   return (
     <section>
       <Header onLogout={handleLogout} />
@@ -244,7 +246,7 @@ export default function Home() {
         currency={selectedCurrencyTo}
       />
 
-      {/* CURRENCIES TABLE - Edit and delete actions are visible only if a user is logged in */}
+      {/* CURRENCIES TABLE - Edit and delete actions are visible only if user is logged in */}
       {rates && rates.length > 0 && (
         <table className='content-table'>
           <thead>
@@ -286,7 +288,7 @@ export default function Home() {
         </table>
       )}
 
-      {/* ADD MORE BUTTON || information on when add/edit/update/delete are available */}
+      {/* ADD MORE BUTTON || information on when add, update, delete are available */}
       {localStorageData ? (
         <div
           className={isCurrencyFormVisible ? 'add-more disabled' : 'add-more'}
@@ -296,12 +298,12 @@ export default function Home() {
         </div>
       ) : (
         <p className='info-text'>
-          * In order to add, edit, update or delete a currency exchange ratio,
-          you have to be logged in
+          * In order to add, update or delete a currency exchange ratio, you
+          have to be logged in
         </p>
       )}
 
-      {/* ADD CURRENCY FORM */}
+      {/* CURRENCY FORM */}
       {isCurrencyFormVisible && (
         <div className='add-currency-container'>
           <form onSubmit={handleCurrencySubmit}>

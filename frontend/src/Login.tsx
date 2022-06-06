@@ -38,7 +38,7 @@ export default function Login() {
           })
           .catch((res) => {
             if (res.code === 'ERR_BAD_REQUEST') {
-              toast.error('Wrong email and/or password');
+              toast.error('Invalid email or password! Please try again.');
             }
           });
       } catch (error) {

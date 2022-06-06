@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/currency_exchange_rates', require('./routes/currencyRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 
-// Middleware that overwrites the default express error handler
+// Middleware for handling exceptions inside of async express routes and passing them to our express error handlers
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

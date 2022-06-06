@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Authenticate a user
+// Authenticate user
 // POST /api/users/login
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;

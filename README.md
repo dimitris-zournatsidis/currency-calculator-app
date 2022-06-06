@@ -11,7 +11,7 @@ Clone the repository to your local environment or download the ZIP file.\
 Run `npm install` in both root and frontend directories.
 
 ## Running the Application
-In order to run concurrently server and client, run:
+In order to run **concurrently** server and client, run:
 
 `npm run dev` in the root directory.
 

@@ -31,7 +31,7 @@ select {
 }
 
 input {
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid rgb(135, 65, 137);
   width: 100%;
   padding: 0.2rem 0.5rem;
 }
