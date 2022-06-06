@@ -35,8 +35,8 @@ export default function Home() {
   const [ratio, setRatio] = useState('');
   const [selectedIdToEdit, setSelectedIdToEdit] = useState('');
 
-  // the line below is used to force re-render
-  const [crudAction, setCrudAction] = useState('');
+  // the state below is used to re-render
+  const [crudAction, setCrudAction] = useState(false);
 
   // Dropdown options
   const [currenciesDropdownOptions, setCurrenciesDropdownOptions] = useState<
@@ -60,6 +60,7 @@ export default function Home() {
       const uniqueArray = [...Array.from(new Set(temp))];
       setCurrenciesDropdownOptions(uniqueArray);
     });
+    setCrudAction(false);
   }, [crudAction]);
 
   // Get one Currency Exchange
@@ -90,7 +91,7 @@ export default function Home() {
       });
   }, [selectedCurrencyFrom, selectedCurrencyTo]);
 
-  // Re-calculate
+  // Recalculate
   useEffect(() => {
     if (selectedExchangeRatio && amountFrom) {
       setAmountTo(format(amountFrom * selectedExchangeRatio));
@@ -99,6 +100,12 @@ export default function Home() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedExchangeRatio]);
+
+  function resetAllFields() {
+    setFrom('');
+    setTo('');
+    setRatio('');
+  }
 
   // Edit Currency
   function handleEditClick(item: IRate) {
@@ -123,7 +130,7 @@ export default function Home() {
               Authorization: `Bearer ${localStorageDataJson.token}`,
             },
           })
-          .then(() => setCrudAction('Deleted'));
+          .then(() => setCrudAction(true));
       }
     }
   }
@@ -131,17 +138,14 @@ export default function Home() {
   function addMoreClick() {
     setIsCurrencyFormVisible(true);
     setSelectedIdToEdit('');
-
-    setFrom('');
-    setTo('');
-    setRatio('');
+    resetAllFields();
   }
 
   function format(num: any) {
     return num.toFixed(4);
   }
 
-  // Re-calculate amount-to when changing amount-from
+  // Set amount-from and recalculate amount-to
   function handleAmountFromChange(amount: number) {
     setAmountFrom(amount);
     if (selectedExchangeRatio) {
@@ -149,7 +153,7 @@ export default function Home() {
     }
   }
 
-  // Re-calculate amount-from when changing amount-to
+  // Set amount-to and recalculate amount-from
   function handleAmountToChange(amount: number) {
     setAmountTo(amount);
     if (selectedExchangeRatio) {
@@ -167,10 +171,18 @@ export default function Home() {
     setSelectedCurrencyTo(selectedCurrency);
   }
 
+  function isString(x: string) {
+    return new RegExp('([\'"]?)[a-zA-Z]+\\1$').test(x);
+  }
+
   // Submit currency for Add or Update
   function handleCurrencySubmit() {
     if (!from || !to || !ratio) {
       toast.error('Please fill all fields');
+    } else if (isNaN(+ratio)) {
+      toast.error('Ratio must be a number');
+    } else if (!isString(from) || !isString(to)) {
+      toast.error('"From" and "To" Currencies must not be numbers');
     } else {
       const currencyData = {
         from: from,
@@ -190,12 +202,9 @@ export default function Home() {
               },
             })
             .then(() => {
-              // trigger a re-render
-              setCrudAction('Updated');
-
-              setFrom('');
-              setTo('');
-              setRatio('');
+              setCrudAction(true);
+              setIsCurrencyFormVisible(false);
+              resetAllFields();
             });
         } else {
           // add form
@@ -206,12 +215,8 @@ export default function Home() {
               },
             })
             .then(() => {
-              // trigger a re-render
-              setCrudAction('Inserted');
-
-              setFrom('');
-              setTo('');
-              setRatio('');
+              setCrudAction(true);
+              resetAllFields();
             });
         }
       }
@@ -248,7 +253,7 @@ export default function Home() {
         currency={selectedCurrencyTo}
       />
 
-      {/* CURRENCIES TABLE - Edit and delete actions are visible only if user is logged in */}
+      {/* CURRENCIES TABLE - Edit and delete actions are visible only if a user is logged in */}
       {rates && rates.length > 0 && (
         <table className='content-table'>
           <thead>
