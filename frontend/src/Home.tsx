@@ -112,17 +112,19 @@ export default function Home() {
 
   // Delete Currency
   function handleDeleteClick(id: string) {
-    window.confirm('Are you sure you want to delete this currency exchange?');
-
-    if (localStorageData) {
-      const localStorageDataJson = JSON.parse(localStorageData);
-      axios
-        .delete(API_CURRENCY_URL + `/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorageDataJson.token}`,
-          },
-        })
-        .then(() => setCrudAction('Deleted'));
+    if (
+      window.confirm('Are you sure you want to delete this currency exchange?')
+    ) {
+      if (localStorageData) {
+        const localStorageDataJson = JSON.parse(localStorageData);
+        axios
+          .delete(API_CURRENCY_URL + `/${id}`, {
+            headers: {
+              Authorization: `Bearer ${localStorageDataJson.token}`,
+            },
+          })
+          .then(() => setCrudAction('Deleted'));
+      }
     }
   }
 
