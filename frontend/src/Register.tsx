@@ -39,12 +39,17 @@ export default function Register() {
         password: password,
       };
       try {
-        axios.post(API_USER_URL, userData).then((res) => {
-          localStorage.setItem('user', JSON.stringify(res.data));
-          toast.success('User registered successfully');
-          resetAllFields();
-          navigate('/');
-        });
+        axios
+          .post(API_USER_URL, userData)
+          .then((res) => {
+            localStorage.setItem('user', JSON.stringify(res.data));
+            toast.success('User registered successfully');
+            resetAllFields();
+            navigate('/');
+          })
+          .catch((error) => {
+            toast.warning(error.response.data.message);
+          });
       } catch (error) {
         console.log(error);
       }
