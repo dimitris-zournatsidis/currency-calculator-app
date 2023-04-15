@@ -25,11 +25,28 @@ export default function Register() {
     setPassword2('');
   }
 
+  function isString(x: string) {
+    return new RegExp('([\'"]?)[a-zA-Z]+\\1$').test(x);
+  }
+
+  function isEmailValid(val: string) {
+    let regEmail = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
+    if (!regEmail.test(val)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   function handleRegister(e: any) {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !password || !password2) {
       toast.error('All fields are required');
+    } else if (!isString(firstName) || !isString(lastName)) {
+      toast.error('Name should not have numbers');
+    } else if (!isEmailValid(email)) {
+      toast.error('Please enter a valid email');
     } else if (password !== password2) {
       toast.error('Passwords do not match');
     } else {
@@ -61,36 +78,70 @@ export default function Register() {
       <h1>Register User</h1>
 
       <form onSubmit={handleRegister}>
-        <input
-          type='text'
-          placeholder='Enter your first name'
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-        <input
-          type='text'
-          placeholder='Enter your last name'
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-        <input
-          type='email'
-          placeholder='Enter your email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type='password'
-          placeholder='Enter your password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          type='password'
-          placeholder='Confirm password'
-          value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
-        />
+        <div className='input-group'>
+          <input
+            type='text'
+            placeholder=''
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+          <span className='highlight'></span>
+          <span className='bar'></span>
+          <label>First Name</label>
+        </div>
+
+        <div className='input-group'>
+          <input
+            type='text'
+            placeholder=''
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+          <span className='highlight'></span>
+          <span className='bar'></span>
+          <label>Last Name</label>
+        </div>
+
+        <div className='input-group'>
+          <input
+            type='email'
+            placeholder=''
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <span className='highlight'></span>
+          <span className='bar'></span>
+          <label>Email</label>
+        </div>
+
+        <div className='input-group'>
+          <input
+            type='password'
+            placeholder=''
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <span className='highlight'></span>
+          <span className='bar'></span>
+          <label>Password</label>
+        </div>
+
+        <div className='input-group'>
+          <input
+            type='password'
+            placeholder=''
+            value={password2}
+            onChange={(e) => setPassword2(e.target.value)}
+            required
+          />
+          <span className='highlight'></span>
+          <span className='bar'></span>
+          <label>Confirm Password</label>
+        </div>
 
         <button onClick={handleRegister}>Sign Up</button>
       </form>

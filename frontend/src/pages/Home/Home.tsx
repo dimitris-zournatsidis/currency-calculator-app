@@ -299,24 +299,44 @@ export default function Home() {
       {isCurrencyFormVisible && (
         <div className='add-currency-container'>
           <form onSubmit={handleCurrencySubmit}>
-            <input
-              type='text'
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              placeholder='From'
-            />
-            <input
-              type='text'
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              placeholder='To'
-            />
-            <input
-              type='text'
-              value={ratio}
-              onChange={(e) => setRatio(e.target.value)}
-              placeholder='Ratio'
-            />
+            <div className='input-group'>
+              <input
+                type='text'
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                placeholder=''
+                required
+              />
+              <span className='highlight'></span>
+              <span className='bar'></span>
+              <label>From</label>
+            </div>
+
+            <div className='input-group'>
+              <input
+                type='text'
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                placeholder=''
+                required
+              />
+              <span className='highlight'></span>
+              <span className='bar'></span>
+              <label>To</label>
+            </div>
+
+            <div className='input-group'>
+              <input
+                type='text'
+                value={ratio}
+                onChange={(e) => setRatio(e.target.value)}
+                placeholder=''
+                required
+              />
+              <span className='highlight'></span>
+              <span className='bar'></span>
+              <label>Ratio</label>
+            </div>
           </form>
 
           <div className='add-currency-button-container'>

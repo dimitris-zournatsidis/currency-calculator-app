@@ -52,19 +52,31 @@ export default function Login() {
       <h1>Login User</h1>
 
       <form onSubmit={handleLogin}>
-        <input
-          type='email'
-          placeholder='Enter your email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className='input-group'>
+          <input
+            type='email'
+            placeholder=''
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <span className='highlight'></span>
+          <span className='bar'></span>
+          <label>Email</label>
+        </div>
 
-        <input
-          type='password'
-          placeholder='Enter your password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className='input-group'>
+          <input
+            type='password'
+            placeholder=''
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <span className='highlight'></span>
+          <span className='bar'></span>
+          <label>Password</label>
+        </div>
 
         <button onClick={handleLogin}>Login</button>
       </form>
