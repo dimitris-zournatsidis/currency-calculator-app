@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Header from './components/Header/Header';
-import CurrencyInput from './components/CurrencyInput/CurrencyInput';
+import Header from '../../components/Header/Header';
+import CurrencyInput from '../../components/CurrencyInput/CurrencyInput';
 import { FaEdit } from 'react-icons/fa';
 import { RiDeleteBin2Line } from 'react-icons/ri';
 import { IoMdAdd } from 'react-icons/io';
 import { toast } from 'react-toastify';
+import './Home.css';
+
 interface IRate {
   _id: string;
   from: string;
@@ -39,9 +41,7 @@ export default function Home() {
   const [crudAction, setCrudAction] = useState(false);
 
   // Dropdown options
-  const [currenciesDropdownOptions, setCurrenciesDropdownOptions] = useState<
-    string[]
-  >([]);
+  const [currenciesDropdownOptions, setCurrenciesDropdownOptions] = useState<string[]>([]);
 
   // Get all Currency Exchanges
   useEffect(() => {
@@ -65,30 +65,23 @@ export default function Home() {
 
   // Get one Currency Exchange
   useEffect(() => {
-    axios
-      .get(API_CURRENCY_URL + `/${selectedCurrencyFrom}/${selectedCurrencyTo}`)
-      .then((res) => {
-        if (res.data !== null) {
-          setSelectedExchangeRatio(res.data.ratio);
-        } else {
-          axios
-            .get(
-              API_CURRENCY_URL +
-                `/${selectedCurrencyTo}/${selectedCurrencyFrom}`
-            )
-            .then((res) => {
-              if (res.data !== null) {
-                setSelectedExchangeRatio(1 / res.data.ratio);
-              } else if (selectedCurrencyFrom === selectedCurrencyTo) {
-                setSelectedExchangeRatio(1);
-              } else {
-                toast.warning(
-                  'No such currency exchange exists! Please try another combination.'
-                );
-              }
-            });
-        }
-      });
+    axios.get(API_CURRENCY_URL + `/${selectedCurrencyFrom}/${selectedCurrencyTo}`).then((res) => {
+      if (res.data !== null) {
+        setSelectedExchangeRatio(res.data.ratio);
+      } else {
+        axios
+          .get(API_CURRENCY_URL + `/${selectedCurrencyTo}/${selectedCurrencyFrom}`)
+          .then((res) => {
+            if (res.data !== null) {
+              setSelectedExchangeRatio(1 / res.data.ratio);
+            } else if (selectedCurrencyFrom === selectedCurrencyTo) {
+              setSelectedExchangeRatio(1);
+            } else {
+              toast.warning('No such currency exchange exists! Please try another combination.');
+            }
+          });
+      }
+    });
   }, [selectedCurrencyFrom, selectedCurrencyTo]);
 
   // Recalculate
@@ -119,9 +112,7 @@ export default function Home() {
 
   // Delete Currency
   function handleDeleteClick(id: string) {
-    if (
-      window.confirm('Are you sure you want to delete this currency exchange?')
-    ) {
+    if (window.confirm('Are you sure you want to delete this currency exchange?')) {
       if (localStorageData) {
         const localStorageDataJson = JSON.parse(localStorageData);
         axios
@@ -274,12 +265,7 @@ export default function Home() {
                   <td>{format(item.ratio)}</td>
                   {localStorageData && (
                     <td>
-                      {
-                        <FaEdit
-                          className='edit-icon'
-                          onClick={() => handleEditClick(item)}
-                        />
-                      }
+                      {<FaEdit className='edit-icon' onClick={() => handleEditClick(item)} />}
                       {
                         <RiDeleteBin2Line
                           className='delete-icon'
@@ -305,8 +291,7 @@ export default function Home() {
         </div>
       ) : (
         <p className='info-text'>
-          * In order to add, update or delete a currency exchange ratio, you
-          have to be logged in
+          * In order to add, update or delete a currency exchange ratio, you have to be logged in
         </p>
       )}
 
@@ -342,9 +327,7 @@ export default function Home() {
               {selectedIdToEdit ? 'Update' : 'Add'}
             </button>
 
-            <button onClick={() => setIsCurrencyFormVisible(false)}>
-              Cancel
-            </button>
+            <button onClick={() => setIsCurrencyFormVisible(false)}>Cancel</button>
           </div>
         </div>
       )}

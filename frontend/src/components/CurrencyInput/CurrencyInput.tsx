@@ -17,11 +17,8 @@ export default function CurrencyInput(props: CurrencyInputProps) {
         value={props.amount || ''}
         onChange={(e) => props.onAmountChange(e.target.value)}
       />
-      
-      <select
-        value={props.currency || ''}
-        onChange={(e) => props.onCurrencyChange(e.target.value)}
-      >
+
+      <select value={props.currency || ''} onChange={(e) => props.onCurrencyChange(e.target.value)}>
         {props.currencies.map((currency, index) => {
           return (
             <option key={index} value={currency}>
