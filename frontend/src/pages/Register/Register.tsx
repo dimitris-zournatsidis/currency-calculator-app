@@ -42,13 +42,13 @@ export default function Register() {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !password || !password2) {
-      toast.error('All fields are required');
+      toast.error('All fields are required.');
     } else if (!isString(firstName) || !isString(lastName)) {
-      toast.error('Name should not have numbers');
+      toast.error('Name should not have numbers.');
     } else if (!isEmailValid(email)) {
-      toast.error('Please enter a valid email');
+      toast.error('Please enter a valid email.');
     } else if (password !== password2) {
-      toast.error('Passwords do not match');
+      toast.error('Passwords do not match.');
     } else {
       const userData = {
         name: name,
@@ -59,7 +59,7 @@ export default function Register() {
         axios
           .post(API_USER_URL, userData)
           .then((res) => {
-            toast.success('User registered successfully. You can now login with your credentials');
+            toast.success('User registered successfully. You can now login with your credentials.');
             resetAllFields();
             navigate('/');
           })

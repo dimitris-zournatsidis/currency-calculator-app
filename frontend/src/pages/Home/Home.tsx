@@ -7,6 +7,7 @@ import { RiDeleteBin2Line } from 'react-icons/ri';
 import { IoMdAdd } from 'react-icons/io';
 import { toast } from 'react-toastify';
 import './Home.css';
+import Modal from '../../components/Modal/Modal';
 
 interface IRate {
   _id: string;
@@ -42,6 +43,8 @@ export default function Home() {
 
   // Dropdown options
   const [currenciesDropdownOptions, setCurrenciesDropdownOptions] = useState<string[]>([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Get all Currency Exchanges
   useEffect(() => {
@@ -122,17 +125,19 @@ export default function Home() {
 
   // Delete Currency
   function handleDeleteClick(id: string) {
-    if (window.confirm('Are you sure you want to delete this currency exchange?')) {
-      if (localStorageData) {
-        const localStorageDataJson = JSON.parse(localStorageData);
-        axios
-          .delete(API_CURRENCY_URL + `/${id}`, {
-            headers: {
-              Authorization: `Bearer ${localStorageDataJson.token}`,
-            },
-          })
-          .then(() => setCrudAction(true));
-      }
+    if (localStorageData) {
+      const localStorageDataJson = JSON.parse(localStorageData);
+      axios
+        .delete(API_CURRENCY_URL + `/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorageDataJson.token}`,
+          },
+        })
+        .then(() => {
+          setCrudAction(true);
+          setIsModalOpen(false);
+          toast.success('Currency exchange was deleted successfully.');
+        });
     }
   }
 
@@ -183,7 +188,7 @@ export default function Home() {
     } else if (isNaN(+ratio)) {
       toast.error('Ratio must be a number');
     } else if (!isString(from) || !isString(to)) {
-      toast.error('"From" and "To" Currencies must not be numbers');
+      toast.error('"From" and "To" Currencies must not be numbers.');
     } else {
       const currencyData = {
         from: from,
@@ -279,9 +284,19 @@ export default function Home() {
                       {
                         <RiDeleteBin2Line
                           className='delete-icon'
-                          onClick={() => handleDeleteClick(item._id)}
+                          onClick={() => setIsModalOpen(true)}
                         />
                       }
+
+                      {isModalOpen && (
+                        <Modal
+                          title='Are you sure you want to delete this?'
+                          confirmText='Yes'
+                          cancellationText='No'
+                          onConfirmClick={() => handleDeleteClick(item._id)}
+                          onCancelClick={() => setIsModalOpen(false)}
+                        />
+                      )}
                     </td>
                   )}
                 </tr>

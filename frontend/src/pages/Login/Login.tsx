@@ -21,7 +21,7 @@ export default function Login() {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error('Please add your email and password');
+      toast.error('Please add your email and password.');
     } else {
       try {
         const userData = {
