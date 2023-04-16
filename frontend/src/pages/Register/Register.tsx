@@ -106,7 +106,7 @@ export default function Register() {
 
         <div className='input-group'>
           <input
-            type='email'
+            type='text'
             placeholder=''
             value={email}
             onChange={(e) => setEmail(e.target.value)}

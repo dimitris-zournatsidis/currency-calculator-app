@@ -54,7 +54,7 @@ export default function Login() {
       <form onSubmit={handleLogin}>
         <div className='input-group'>
           <input
-            type='email'
+            type='text'
             placeholder=''
             value={email}
             onChange={(e) => setEmail(e.target.value)}
