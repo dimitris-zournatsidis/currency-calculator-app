@@ -32,7 +32,11 @@ export default function Login() {
           .post(API_USER_URL + 'login', userData)
           .then((res) => {
             localStorage.setItem('user', JSON.stringify(res.data));
-            toast.success('Welcome back!');
+
+            const fullNameOfUser = res.data.name.split(' ');
+            const userFirstname = fullNameOfUser[0];
+
+            toast.success(`Welcome back, ${userFirstname}!`);
             resetAllFields();
             navigate('/');
           })

@@ -59,8 +59,7 @@ export default function Register() {
         axios
           .post(API_USER_URL, userData)
           .then((res) => {
-            localStorage.setItem('user', JSON.stringify(res.data));
-            toast.success('User registered successfully');
+            toast.success('User registered successfully. You can now login with your credentials');
             resetAllFields();
             navigate('/');
           })
