@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TiArrowBackOutline } from 'react-icons/ti';
-import { AiOutlineEye } from 'react-icons/ai';
-import { AiOutlineEyeInvisible } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import InputField from '../../components/InputField/InputField';
 
 const API_USER_URL = 'http://localhost:5000/api/users/';
 
@@ -60,47 +59,17 @@ export default function Login() {
       <h1>Login User</h1>
 
       <form onSubmit={handleLogin}>
-        <div className='input-group'>
-          <input
-            type='text'
-            placeholder=''
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <span className='highlight'></span>
-          <span className='bar'></span>
-          <label>Email</label>
-        </div>
+        <InputField label='Email' value={email} setValue={setEmail} />
 
-        <div className='input-group'>
-          <input
-            type={isPasswordVisible ? 'text' : 'password'}
-            placeholder=''
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <span className='highlight'></span>
-          <span className='bar'></span>
-          <label>Password</label>
-
-          {password.length > 0 && (
-            <div className='eye-icon-container'>
-              {isPasswordVisible ? (
-                <AiOutlineEyeInvisible
-                  className='eye-icon'
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              ) : (
-                <AiOutlineEye
-                  className='eye-icon'
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              )}
-            </div>
-          )}
-        </div>
+        <InputField
+          inputType={isPasswordVisible ? 'text' : 'password'}
+          label='Password'
+          value={password}
+          setValue={setPassword}
+          isValueVisible={isPasswordVisible}
+          hasPasswordLength={password.length > 0}
+          onEyeClick={() => setIsPasswordVisible(!isPasswordVisible)}
+        />
 
         <button onClick={handleLogin}>Login</button>
       </form>

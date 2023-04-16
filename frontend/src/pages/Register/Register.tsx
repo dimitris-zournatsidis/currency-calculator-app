@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TiArrowBackOutline } from 'react-icons/ti';
-import { AiOutlineEye } from 'react-icons/ai';
-import { AiOutlineEyeInvisible } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import InputField from '../../components/InputField/InputField';
 
 const API_USER_URL = 'http://localhost:5000/api/users/';
 
@@ -82,102 +81,29 @@ export default function Register() {
       <h1>Register User</h1>
 
       <form onSubmit={handleRegister}>
-        <div className='input-group'>
-          <input
-            type='text'
-            placeholder=''
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-          <span className='highlight'></span>
-          <span className='bar'></span>
-          <label>First Name</label>
-        </div>
+        <InputField label='First Name' value={firstName} setValue={setFirstName} />
+        <InputField label='Last Name' value={lastName} setValue={setLastName} />
+        <InputField label='Email' value={email} setValue={setEmail} />
 
-        <div className='input-group'>
-          <input
-            type='text'
-            placeholder=''
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-          <span className='highlight'></span>
-          <span className='bar'></span>
-          <label>Last Name</label>
-        </div>
+        <InputField
+          inputType={isPasswordVisible ? 'text' : 'password'}
+          label='Password'
+          value={password}
+          setValue={setPassword}
+          isValueVisible={isPasswordVisible}
+          hasPasswordLength={password.length > 0}
+          onEyeClick={() => setIsPasswordVisible(!isPasswordVisible)}
+        />
 
-        <div className='input-group'>
-          <input
-            type='text'
-            placeholder=''
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <span className='highlight'></span>
-          <span className='bar'></span>
-          <label>Email</label>
-        </div>
-
-        <div className='input-group'>
-          <input
-            type={isPasswordVisible ? 'text' : 'password'}
-            placeholder=''
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <span className='highlight'></span>
-          <span className='bar'></span>
-          <label>Password</label>
-
-          {password.length > 0 && (
-            <div className='eye-icon-container'>
-              {isPasswordVisible ? (
-                <AiOutlineEyeInvisible
-                  className='eye-icon'
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              ) : (
-                <AiOutlineEye
-                  className='eye-icon'
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className='input-group'>
-          <input
-            type={isConfirmPasswordVisible ? 'text' : 'password'}
-            placeholder=''
-            value={password2}
-            onChange={(e) => setPassword2(e.target.value)}
-            required
-          />
-          <span className='highlight'></span>
-          <span className='bar'></span>
-          <label>Confirm Password</label>
-
-          {password2.length > 0 && (
-            <div className='eye-icon-container'>
-              {isConfirmPasswordVisible ? (
-                <AiOutlineEyeInvisible
-                  className='eye-icon'
-                  onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
-                />
-              ) : (
-                <AiOutlineEye
-                  className='eye-icon'
-                  onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
-                />
-              )}
-            </div>
-          )}
-        </div>
+        <InputField
+          inputType={isConfirmPasswordVisible ? 'text' : 'password'}
+          label='Confirm Password'
+          value={password2}
+          setValue={setPassword2}
+          isValueVisible={isConfirmPasswordVisible}
+          hasPasswordLength={password2.length > 0}
+          onEyeClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+        />
 
         <button onClick={handleRegister}>Sign Up</button>
       </form>
