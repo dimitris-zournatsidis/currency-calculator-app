@@ -162,7 +162,7 @@ export default function Register() {
           <span className='bar'></span>
           <label>Confirm Password</label>
 
-          {password.length > 0 && (
+          {password2.length > 0 && (
             <div className='eye-icon-container'>
               {isConfirmPasswordVisible ? (
                 <AiOutlineEyeInvisible
