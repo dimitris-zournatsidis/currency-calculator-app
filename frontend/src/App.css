@@ -52,6 +52,18 @@ label {
   -webkit-transition: 0.4s ease all;
 }
 
+.eye-icon-container {
+  position: absolute;
+  right: 0.5rem;
+  top: 10px;
+}
+
+.eye-icon {
+  font-size: 1.3rem;
+  color: grey;
+  z-index: 999;
+}
+
 input:focus ~ label,
 input:valid ~ label {
   top: -10px;

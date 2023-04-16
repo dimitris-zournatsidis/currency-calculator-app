@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TiArrowBackOutline } from 'react-icons/ti';
+import { AiOutlineEye } from 'react-icons/ai';
+import { AiOutlineEyeInvisible } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -14,6 +16,9 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   const name = firstName + ' ' + lastName;
 
@@ -118,7 +123,7 @@ export default function Register() {
 
         <div className='input-group'>
           <input
-            type='password'
+            type={isPasswordVisible ? 'text' : 'password'}
             placeholder=''
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -127,11 +132,27 @@ export default function Register() {
           <span className='highlight'></span>
           <span className='bar'></span>
           <label>Password</label>
+
+          {password.length > 0 && (
+            <div className='eye-icon-container'>
+              {isPasswordVisible ? (
+                <AiOutlineEyeInvisible
+                  className='eye-icon'
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                />
+              ) : (
+                <AiOutlineEye
+                  className='eye-icon'
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <div className='input-group'>
           <input
-            type='password'
+            type={isConfirmPasswordVisible ? 'text' : 'password'}
             placeholder=''
             value={password2}
             onChange={(e) => setPassword2(e.target.value)}
@@ -140,6 +161,22 @@ export default function Register() {
           <span className='highlight'></span>
           <span className='bar'></span>
           <label>Confirm Password</label>
+
+          {password.length > 0 && (
+            <div className='eye-icon-container'>
+              {isConfirmPasswordVisible ? (
+                <AiOutlineEyeInvisible
+                  className='eye-icon'
+                  onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                />
+              ) : (
+                <AiOutlineEye
+                  className='eye-icon'
+                  onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <button onClick={handleRegister}>Sign Up</button>

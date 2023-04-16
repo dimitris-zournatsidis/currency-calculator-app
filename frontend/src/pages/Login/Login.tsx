@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TiArrowBackOutline } from 'react-icons/ti';
+import { AiOutlineEye } from 'react-icons/ai';
+import { AiOutlineEyeInvisible } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -11,6 +13,8 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   function resetAllFields() {
     setEmail('');
@@ -71,7 +75,7 @@ export default function Login() {
 
         <div className='input-group'>
           <input
-            type='password'
+            type={isPasswordVisible ? 'text' : 'password'}
             placeholder=''
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -80,6 +84,22 @@ export default function Login() {
           <span className='highlight'></span>
           <span className='bar'></span>
           <label>Password</label>
+
+          {password.length > 0 && (
+            <div className='eye-icon-container'>
+              {isPasswordVisible ? (
+                <AiOutlineEyeInvisible
+                  className='eye-icon'
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                />
+              ) : (
+                <AiOutlineEye
+                  className='eye-icon'
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <button onClick={handleLogin}>Login</button>
