@@ -94,6 +94,16 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedExchangeRatio]);
 
+  // When Form is visible, scroll to buttons container
+  useEffect(() => {
+    if (isCurrencyFormVisible) {
+      const element = document.getElementById('buttons-id');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+
   function resetAllFields() {
     setFrom('');
     setTo('');
@@ -339,7 +349,7 @@ export default function Home() {
             </div>
           </form>
 
-          <div className='add-currency-button-container'>
+          <div id='buttons-id' className='add-currency-button-container'>
             <button
               onClick={handleCurrencySubmit}
               className={selectedIdToEdit ? 'update-button' : 'add-button'}
