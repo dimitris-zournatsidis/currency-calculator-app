@@ -8,6 +8,7 @@ import { IoMdAdd } from 'react-icons/io';
 import { toast } from 'react-toastify';
 import './Home.css';
 import Modal from '../../components/Modal/Modal';
+import InputField from '../../components/InputField/InputField';
 
 interface IRate {
   _id: string;
@@ -324,44 +325,9 @@ export default function Home() {
       {isCurrencyFormVisible && (
         <div className='add-currency-container'>
           <form onSubmit={handleCurrencySubmit}>
-            <div className='input-group'>
-              <input
-                type='text'
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-                placeholder=''
-                required
-              />
-              <span className='highlight'></span>
-              <span className='bar'></span>
-              <label>From</label>
-            </div>
-
-            <div className='input-group'>
-              <input
-                type='text'
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                placeholder=''
-                required
-              />
-              <span className='highlight'></span>
-              <span className='bar'></span>
-              <label>To</label>
-            </div>
-
-            <div className='input-group'>
-              <input
-                type='text'
-                value={ratio}
-                onChange={(e) => setRatio(e.target.value)}
-                placeholder=''
-                required
-              />
-              <span className='highlight'></span>
-              <span className='bar'></span>
-              <label>Ratio</label>
-            </div>
+            <InputField label='From' value={from} setValue={setFrom} />
+            <InputField label='To' value={to} setValue={setTo} />
+            <InputField label='Ratio' value={ratio} setValue={setRatio} />
           </form>
 
           <div id='buttons-id' className='add-currency-button-container'>
